@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:kotak_cherry/data/data_sources/local/services/DatabaseService.dart';
 import 'package:kotak_cherry/ui/common/RouteGenerator.dart';
 import 'package:kotak_cherry/view_models/CreateTaskViewModel.dart';
 import 'package:kotak_cherry/view_models/TaskListViewModel.dart';
 
-void main() {
+void main() async {
+  await DatabaseService.registerDataModels();
   runApp(const MyApp());
 }
 
@@ -80,7 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // vm.priority = 1;
     // vm.label = 1;
     // vm.saveTask();
-
 
     // vm.getTask();
 

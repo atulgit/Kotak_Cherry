@@ -1,11 +1,19 @@
 import 'package:hive/hive.dart';
+part 'TaskDbModel.g.dart';
 
+@HiveType(typeId: 1)
 class TaskDbModel {
+  @HiveField(0)
   String task_id = "";
+  @HiveField(1)
   int task_priority = -1;
+  @HiveField(2)
   int task_label = -1;
+  @HiveField(3)
   String title = "";
+  @HiveField(4)
   String description = "";
+  @HiveField(5)
   String due_date = "";
 
   Map<String, dynamic> toMap() {
