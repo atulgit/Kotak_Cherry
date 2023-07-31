@@ -81,7 +81,7 @@
 42-->[androidx.core:core:1.7.0] /Users/atulkumar/.gradle/caches/transforms-3/57d13c65eae90a7945dea98c1aa2b720/transformed/core-1.7.0/AndroidManifest.xml:24:18-86
 43        android:debuggable="true"
 44        android:icon="@mipmap/ic_launcher"
-45        android:label="kotak_cherry" >
+45        android:label="Kotak Cheery" >
 46        <activity
 47            android:name="com.example.kotak_cherry.MainActivity"
 48            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

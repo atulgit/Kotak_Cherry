@@ -26,4 +26,9 @@ class TaskRepoImp implements TaskRepository {
   Future<Result<List<TaskEntity>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy, String query) {
     return taskRepositoryDatabase.fetchSortedAndFilteredTask(priority, label, dueDate, sortBy, query);
   }
+
+  @override
+  Future<Result<TaskEntity>> setTaskCompleted(int taskId) {
+    return taskRepositoryDatabase.setCompletedTask(taskId);
+  }
 }

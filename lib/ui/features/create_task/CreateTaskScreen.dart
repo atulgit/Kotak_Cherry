@@ -27,7 +27,7 @@ class CreateTaskState extends State<CreateTaskScreen> {
 
   int _selectedPriority = -1;
   int _selectedLabel = -1;
-  final double _spacing = 40.0;
+  final double _spacing = 30.0;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();

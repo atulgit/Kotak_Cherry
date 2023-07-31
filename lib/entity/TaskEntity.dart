@@ -4,6 +4,7 @@ class TaskEntity extends BaseEntity implements Comparable<TaskEntity> {
   int taskId = -1;
   int taskPriority = -1;
   int taskLabel = -1;
+  int isCompleted = -1; //0 -> Not-Completed, 1-> Completed
 
   String title = "";
   String description = "";
@@ -11,7 +12,7 @@ class TaskEntity extends BaseEntity implements Comparable<TaskEntity> {
 
   TaskEntity();
 
-  TaskEntity.fromAttr(this.taskId, this.title, this.dueDate, this.taskPriority, this.taskLabel, this.description);
+  TaskEntity.fromAttr(this.taskId, this.title, this.dueDate, this.taskPriority, this.taskLabel, this.description, {this.isCompleted = 0});
 
   TaskEntity.fromId(this.taskId);
 

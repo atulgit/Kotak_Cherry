@@ -13,6 +13,10 @@ class PrioritySelector {
 
   PrioritySelector(this.onChange);
 
+  void setSelectedValue(int selectedValue) {
+    _selectedPriority = selectedValue;
+  }
+
   Widget getPriorities() {
     List<DropdownMenuItem<String>> menuItems = [];
     menuItems.clear();
@@ -29,7 +33,7 @@ class PrioritySelector {
             isExpanded: true,
             items: menuItems,
             validator: (String? value) {
-              return (_selectedPriority == -1) ? 'PLease select travel mode.' : null;
+              return (_selectedPriority == -1) ? 'PLease select priority.' : null;
             },
             decoration: CommonViews.getDropwDownDecorator("Select Priority", null),
             onChanged: (Object? value) {

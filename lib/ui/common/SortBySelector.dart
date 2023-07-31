@@ -13,6 +13,10 @@ class SortBySelector {
 
   SortBySelector(this.onChange);
 
+  void setSelectedValue(int value) {
+    _selectedFilterId = value;
+  }
+
   Widget getFilters() {
     List<DropdownMenuItem<String>> menuItems = [];
     menuItems.clear();
@@ -29,7 +33,7 @@ class SortBySelector {
             validator: (String? value) {
               return (_selectedFilterId == -1) ? 'PLease select option.' : null;
             },
-            decoration: CommonViews.getDropwDownDecorator("Select Option", null),
+            decoration: CommonViews.getDropwDownDecorator("Sort By", null),
             onChanged: (Object? value) {
               _selectedFilterId = int.parse(value.toString());
               if (onChange != null) onChange!(value);

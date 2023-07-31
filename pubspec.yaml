@@ -47,6 +47,11 @@ dependencies:
   awesome_notifications: ^0.6.19
   path_provider: ^2.0.15
 
+#dependency_overrides:
+#  dartx: ^0.3.0
+#  path: ^1.7.0
+#  collection: ^1.14.11
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

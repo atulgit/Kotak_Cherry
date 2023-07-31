@@ -28,6 +28,7 @@ class CreateTaskViewModel extends BaseViewModel {
     task.taskPriority = priority;
     task.taskLabel = label;
     task.dueDate = dueDate;
+    task.isCompleted = -1;
 
     var taskUseCaseParam = SaveTaskUseCaseParams(task);
     var result = await taskUseCase.invoke(taskUseCaseParam);

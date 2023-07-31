@@ -11,4 +11,6 @@ abstract interface class TaskRepository extends BaseRepository {
   Future<Result<List<TaskEntity>>> getTaskList();
 
   Future<Result<List<TaskEntity>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy, String query);
+
+  Future<Result<TaskEntity>> setTaskCompleted(int taskId);
 }

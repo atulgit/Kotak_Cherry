@@ -14,6 +14,10 @@ class LabelSelector {
 
   LabelSelector(this.onChange);
 
+  void setSelectedValue(int value) {
+    _selectedLabel = value;
+  }
+
   Widget getLabels() {
     List<DropdownMenuItem<String>> menuItems = [];
     menuItems.clear();

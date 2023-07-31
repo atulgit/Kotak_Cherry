@@ -1,16 +1,20 @@
 import 'package:kotak_cherry/common/KotalResult.dart';
 import 'package:kotak_cherry/data/RepoImp/TaskRepoImp.dart';
 import 'package:kotak_cherry/domain/user_cases/BaseUseCase.dart';
+import 'package:kotak_cherry/domain/user_cases/FetchCompletedTasksUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/FetchFilteredAndSortedTasksUseCase.dart';
+import 'package:kotak_cherry/domain/user_cases/FetchFilteredCompletedTasksUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/FetchTaskListUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/FetchTaskUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/SaveTaskUseCase.dart';
+import 'package:kotak_cherry/domain/user_cases/SetCompletedTaskUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/TaskUseCase.dart';
 import 'package:kotak_cherry/entity/TaskEntity.dart';
 import 'package:kotak_cherry/view_models/BaseViewModel.dart';
 
 class TaskListViewModel extends BaseViewModel {
   List<TaskEntity> taskList = [];
+  List<TaskEntity> completedTaskList = [];
 
   int taskId = -1;
   int priority = -1;
@@ -35,6 +39,33 @@ class TaskListViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void resetFilters() {
+    priority = -1;
+    label = -1;
+    sortBy = -1;
+    dueDate = "";
+
+    notifyListeners();
+  }
+
+  void markCompletedTask(TaskEntity taskEntity) async {
+    var setCompletedTaskUseCase = SetCompletedTaskUseCase(TaskRepoImp());
+    var result = await setCompletedTaskUseCase.invoke(SetCompletedTaskUseCaseParams(taskEntity.taskId));
+
+    switch (result) {
+      case Success<TaskEntity>():
+        // taskEntity.isCompleted = 1;
+        // taskEntity.notifyListeners();
+
+        fetchTaskList();
+        // notifyListeners();
+        break;
+
+      case Failure<TaskEntity>():
+        break;
+    }
+  }
+
   void fetchTaskList() async {
     var taskListUseCase = FetchTaskListUseCase(TaskRepoImp());
     var result = await taskListUseCase.invoke(FetchTaskListUseCaseParams());
@@ -43,6 +74,8 @@ class TaskListViewModel extends BaseViewModel {
       case Success<List<TaskEntity>>():
         taskList.clear();
         taskList.addAll(result.value);
+
+        _fetchCompletedTasks(taskList);
         // notifyListeners();
         break;
 
@@ -53,6 +86,23 @@ class TaskListViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void _fetchCompletedTasks(List<TaskEntity> tasks) async {
+    var taskListUseCase = FetchCompletedTasksUseCase(TaskRepoImp());
+    var result = await taskListUseCase.invoke(FetchCompletedTasksUseCaseParams(tasks));
+
+    switch (result) {
+      case Success<List<TaskEntity>>():
+        completedTaskList.clear();
+        completedTaskList.addAll(result.value);
+
+        notifyListeners();
+        break;
+
+      case Failure<List<TaskEntity>>():
+        break;
+    }
+  }
+
   void filterAndSortTasks() async {
     var taskListUseCase = FetchFilteredAndSortedTasksUseCase(TaskRepoImp());
     var result = await taskListUseCase.invoke(FetchFilteredAndSortedTasksUseCaseParams(priority, label, sortBy, dueDate, query));
@@ -61,7 +111,8 @@ class TaskListViewModel extends BaseViewModel {
       case Success<List<TaskEntity>>():
         taskList.clear();
         taskList.addAll(result.value);
-        notifyListeners();
+
+        // notifyListeners();
         break;
 
       case Failure<List<TaskEntity>>():
@@ -69,6 +120,23 @@ class TaskListViewModel extends BaseViewModel {
     }
 
     notifyListeners();
+  }
+
+  void fetchFilteredAndSortedCompletedTasks() async {
+    var taskListUseCase = FetchFilteredCompletedTasksUseCase(TaskRepoImp());
+    var result = await taskListUseCase.invoke(FetchFilteredCompletedTasksUseCaseParams(priority, label, sortBy, dueDate, query));
+
+    switch (result) {
+      case Success<List<TaskEntity>>():
+        completedTaskList.clear();
+        completedTaskList.addAll(result.value);
+
+        notifyListeners();
+        break;
+
+      case Failure<List<TaskEntity>>():
+        break;
+    }
   }
 }
 
