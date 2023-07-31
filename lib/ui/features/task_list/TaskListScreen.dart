@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kotak_cherry/common/KCCommon.dart';
+import 'package:kotak_cherry/common/KCUtility.dart';
 import 'package:kotak_cherry/common/enums/Priority.dart';
 import 'package:kotak_cherry/common/enums/TaskLabel.dart';
 import 'package:kotak_cherry/entity/TaskEntity.dart';
@@ -28,6 +28,8 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class TaskListState extends State<TaskListScreen> {
+  final TextEditingController _searchTaskController = TextEditingController();
+
   late final TaskListViewModel _taskListViewModel;
   late final PrioritySelector _prioritySelector;
   late final LabelSelector _labelSelector;
@@ -77,10 +79,10 @@ class TaskListState extends State<TaskListScreen> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Column(children: [
-            SizedBox(height: 100, child: Padding(padding: const EdgeInsets.only(top: 10), child: getHeaderOptions())),
+            Padding(padding: const EdgeInsets.only(top: 10), child: getHeaderOptions()),
             const SizedBox(height: 10),
             if (viewModel.taskList.isEmpty)
-              getEmptyListPlaceholder()
+              Padding(padding: EdgeInsets.only(top: 50), child: getEmptyListPlaceholder())
             else
               SingleChildScrollView(
                   child: ListView.builder(
@@ -123,10 +125,12 @@ class TaskListState extends State<TaskListScreen> {
                                                 child: Row(children: [
                                                   RichText(
                                                       text: TextSpan(children: [
-                                                    const TextSpan(text: "Due By: ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+                                                    const TextSpan(
+                                                        text: "Due By: ",
+                                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.black)),
                                                     TextSpan(
-                                                        text: KCCommon.getFormattedDate(taskEntity.dueDate),
-                                                        style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 11))
+                                                        text: KCUtility.getFormattedDate(taskEntity.dueDate),
+                                                        style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 11, color: Colors.red))
                                                   ]))
                                                 ]))
                                           ])
@@ -139,6 +143,114 @@ class TaskListState extends State<TaskListScreen> {
   }
 
   Widget getHeaderOptions() {
+    Color _getTextColor(Set<MaterialState> states) => states.any(<MaterialState>{
+          MaterialState.pressed,
+          MaterialState.hovered,
+          MaterialState.focused,
+        }.contains)
+            ? Colors.green
+            : Colors.blueGrey;
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(
+          height: 50,
+          child: Row(textDirection: TextDirection.ltr, children: [
+            Expanded(
+                child: TextFormField(
+              controller: _searchTaskController,
+              onTap: () {},
+              decoration: const InputDecoration(
+                hintText: 'Search tasks',
+              ),
+
+              onChanged: (value) {
+                _taskListViewModel?.query = value;
+                if (value.isNotEmpty && value.length > 2) {
+                  _taskListViewModel!.filterAndSortTasks();
+                }
+              },
+              expands: true,
+              maxLines: null,
+              // decoration: CommonViews.getTextEditFieldDecorator("Search Task", null),
+              onSaved: (String? value) {},
+              validator: (String? value) {
+                return (value == null || value.isEmpty) ? 'Date cant be empty.' : null;
+              },
+            )),
+            const SizedBox(width: 10),
+            ElevatedButton(
+                onPressed: () {
+                  _taskListViewModel?.query = "";
+                  _searchTaskController.text = "";
+                  _taskListViewModel!.filterAndSortTasks();
+                },
+                style: CommonStyles.buttonStyle,
+                child: const Text("Clear", style: TextStyle(color: Colors.white)))
+          ])),
+      const SizedBox(height: 15),
+      Row(mainAxisSize: MainAxisSize.max, children: [
+        Expanded(
+            child: InkWell(
+                onTap: () {
+                  showDialog<void>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return Align(
+                          alignment: Alignment.center,
+                          child: Material(
+                              child: Padding(
+                                  padding: const EdgeInsets.all(40),
+                                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                                    _prioritySelector!.getPriorities(),
+                                    const SizedBox(height: 20),
+                                    _labelSelector!.getLabels(),
+                                    const SizedBox(height: 20),
+                                    SizedBox(
+                                        width: 200,
+                                        child: TextFormField(
+                                          onTap: () {
+                                            CommonViews.showDate(context).then((value) {
+                                              _dateSelectorController.text = value;
+                                              _taskListViewModel?.dueDate = value;
+                                              _taskListViewModel?.filterAndSortTasks();
+                                            });
+                                          },
+                                          controller: _dateSelectorController,
+                                          decoration: CommonViews.getTextEditFieldDecorator("Select Date", null),
+                                          onSaved: (String? value) {},
+                                          validator: (String? value) {
+                                            return (value == null || value.isEmpty) ? 'Date cant be empty.' : null;
+                                          },
+                                        )),
+                                    const SizedBox(height: 20),
+                                    _filterSelector.getFilters(),
+                                    const SizedBox(height: 20),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          // _taskListViewModel!.filterAndSortTasks();
+                                        },
+                                        style: CommonStyles.buttonStyle,
+                                        child: const Text("Close", style: TextStyle(color: Colors.white)))
+                                  ]))));
+                    },
+                  );
+                },
+                child: const Text("Filter & Sort Options", style: TextStyle(fontWeight: FontWeight.bold)))),
+        ElevatedButton.icon(
+            onPressed: () {
+              gotoNewTask();
+            },
+            icon: const Icon(Icons.add, color: Colors.white),
+            style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith(_getTextColor)),
+            label: const Text(
+              "New Task",
+              style: TextStyle(color: Colors.white),
+            ))
+      ]),
+    ]);
+
     return Stack(children: [
       Positioned(
           left: 0,
@@ -181,6 +293,12 @@ class TaskListState extends State<TaskListScreen> {
     ]);
   }
 
+  void gotoNewTask() {
+    Navigator.pushNamed(context, "/createtask").then((value) {
+      _taskListViewModel?.fetchTaskList();
+    });
+  }
+
   Widget getEmptyListPlaceholder() {
     return Center(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -191,9 +309,7 @@ class TaskListState extends State<TaskListScreen> {
           height: 100,
           child: InkWell(
               onTap: () {
-                Navigator.pushNamed(context, "/createtask").then((value) {
-                  _taskListViewModel?.fetchTaskList();
-                });
+                gotoNewTask();
               },
               child: Container(
                   decoration: BoxDecoration(

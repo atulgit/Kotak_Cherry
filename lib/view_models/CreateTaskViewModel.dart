@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:kotak_cherry/view_models/BaseViewModel.dart';
 
 import '../common/KotalResult.dart';
@@ -12,6 +13,12 @@ class CreateTaskViewModel extends BaseViewModel {
   String dueDate = "";
   String title = "";
   String description = "";
+  TimeOfDay? notificationTime;
+
+  void setNotificationTime(TimeOfDay timeOfDay) {
+    notificationTime = timeOfDay;
+    notifyListeners();
+  }
 
   Future<void> saveTask() async {
     var taskUseCase = SaveTaskUseCase(TaskRepoImp());

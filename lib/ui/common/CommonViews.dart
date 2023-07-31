@@ -6,7 +6,7 @@ import 'package:kotak_cherry/common/enums/Priority.dart';
 mixin CommonViews {
   static InputDecoration getDropwDownDecorator(String label, IconData? icon) {
     return InputDecoration(
-      icon: Icon(icon, size: 24),
+      icon: icon == null ? null : Icon(icon, size: 24),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5.0),
         borderSide: BorderSide(
@@ -44,7 +44,7 @@ mixin CommonViews {
   //
   static InputDecoration getTextEditFieldDecorator(String label, IconData? icon) {
     return InputDecoration(
-      icon: Icon(icon, size: 24),
+      icon: icon == null ? null : Icon(icon, size: 24),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5.0),
         borderSide: BorderSide(
@@ -81,6 +81,8 @@ mixin CommonViews {
 
   static Future<String> showDate(BuildContext context) async {
     String format = "yyyy-MM-dd";
+    // await showTimePicker(context: context, initialTime: TimeOfDay(hour: 5, minute: 12));
+    // return "";
     var selectedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),

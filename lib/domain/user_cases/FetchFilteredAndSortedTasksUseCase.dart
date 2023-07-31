@@ -10,7 +10,7 @@ class FetchFilteredAndSortedTasksUseCase extends BaseUseCase<Future<Result<List<
 
   @override
   Future<Result<List<TaskEntity>>> invoke(FetchFilteredAndSortedTasksUseCaseParams params) async {
-    var result = await taskRepository.fetchSortedAndFilteredTask(params.priority, params.label, params.dueDate, params.sortBy);
+    var result = await taskRepository.fetchSortedAndFilteredTask(params.priority, params.label, params.dueDate, params.sortBy, params.query);
     switch (result) {
       case Success<List<TaskEntity>>():
         var tasks = result.value;
@@ -31,6 +31,7 @@ class FetchFilteredAndSortedTasksUseCaseParams {
   String dueDate = "";
   int label = -1;
   int sortBy = -1;
+  String query = "";
 
-  FetchFilteredAndSortedTasksUseCaseParams(this.priority, this.label, this.sortBy, this.dueDate);
+  FetchFilteredAndSortedTasksUseCaseParams(this.priority, this.label, this.sortBy, this.dueDate, this.query);
 }

@@ -9,5 +9,5 @@ abstract interface class TaskRepositoryDatabase {
 
   Future<Result<List<TaskEntity>>> fetchTaskList();
 
-  Future<Result<List<TaskEntity>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy);
+  Future<Result<List<TaskEntity>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy, String query);
 }

@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
-import 'package:kotak_cherry/common/KCCommon.dart';
+import 'package:kotak_cherry/common/KCUtility.dart';
 import 'package:kotak_cherry/data/data_sources/local/DBConstants.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../common/KotalResult.dart';
 import '../../../models/TaskDbModel.dart';
 
 class DatabaseService {
+  static init() async {
+    final appDocumentDirectory = await getApplicationDocumentsDirectory();
+    Hive.init(appDocumentDirectory.path);
+    _registerDataModels();
+  }
 
-  static registerDataModels() async {
-    // await Hive.init(path);
+  static _registerDataModels() {
     if (!Hive.isAdapterRegistered(TaskDbModelAdapter().typeId)) {
       Hive.registerAdapter(TaskDbModelAdapter());
     }
@@ -19,7 +24,9 @@ class DatabaseService {
   static Future<Box<TaskDbModel>> get _database => Hive.openBox<TaskDbModel>(DBContants.TBL_Task);
 
   static final DatabaseService databaseService = DatabaseService._internal();
+
   factory DatabaseService() => databaseService;
+
   DatabaseService._internal();
 
   static List<TaskDbModel> tasks = [
@@ -37,7 +44,7 @@ class DatabaseService {
     }
   }
 
-  static Future<Result<List<TaskDbModel>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy) async {
+  static Future<Result<List<TaskDbModel>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy, String query) async {
     try {
       final database = await _database;
       tasks = database.values.toList();
@@ -46,7 +53,8 @@ class DatabaseService {
           .where((element) =>
               (priority == -1 || element.task_priority == priority) &&
               (label == -1 || element.task_label == label) &&
-              (dueDate.isEmpty || KCCommon.getFormattedDate(dueDate.trim()) == KCCommon.getFormattedDate(element.due_date.trim())))
+              (query.isEmpty || element.title.contains(query)) &&
+              (dueDate.isEmpty || KCUtility.getFormattedDate(dueDate.trim()) == KCUtility.getFormattedDate(element.due_date.trim())))
           .toList());
     } catch (e) {
       return const Failure();
@@ -65,13 +73,11 @@ class DatabaseService {
 
   static Future<Result<TaskDbModel>> saveTask(TaskDbModel taskDbModel) async {
     try {
-
       final database = await _database;
       await database.add(taskDbModel);
 
       tasks.add(taskDbModel);
       return Success<TaskDbModel>(taskDbModel);
-
     } catch (e) {
       return const Failure();
     }

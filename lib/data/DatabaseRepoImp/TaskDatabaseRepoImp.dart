@@ -75,8 +75,8 @@ class TaskDatabaseRepoImp implements TaskRepositoryDatabase {
   }
 
   @override
-  Future<Result<List<TaskEntity>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy) async {
-    var taskModel = await DatabaseService.fetchSortedAndFilteredTask(priority, label, dueDate, sortBy);
+  Future<Result<List<TaskEntity>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy, String query) async {
+    var taskModel = await DatabaseService.fetchSortedAndFilteredTask(priority, label, dueDate, sortBy, query);
     switch (taskModel) {
       case Success<List<TaskDbModel>>():
         var tasks = taskModel.value.map((e) {

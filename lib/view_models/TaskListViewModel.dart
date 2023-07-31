@@ -17,6 +17,7 @@ class TaskListViewModel extends BaseViewModel {
   int label = -1;
   int sortBy = -1;
   String dueDate = "";
+  String query = "";
 
   void getTask() async {
     var taskUseCase = FetchTaskUseCase(TaskRepoImp());
@@ -54,7 +55,7 @@ class TaskListViewModel extends BaseViewModel {
 
   void filterAndSortTasks() async {
     var taskListUseCase = FetchFilteredAndSortedTasksUseCase(TaskRepoImp());
-    var result = await taskListUseCase.invoke(FetchFilteredAndSortedTasksUseCaseParams(priority, label, sortBy, dueDate));
+    var result = await taskListUseCase.invoke(FetchFilteredAndSortedTasksUseCaseParams(priority, label, sortBy, dueDate, query));
 
     switch (result) {
       case Success<List<TaskEntity>>():

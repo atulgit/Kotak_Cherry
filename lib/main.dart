@@ -1,11 +1,16 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:kotak_cherry/data/data_sources/local/services/DatabaseService.dart';
+import 'package:kotak_cherry/ui/common/AppConstants.dart';
+import 'package:kotak_cherry/ui/common/NotificationManager.dart';
 import 'package:kotak_cherry/ui/common/RouteGenerator.dart';
 import 'package:kotak_cherry/view_models/CreateTaskViewModel.dart';
 import 'package:kotak_cherry/view_models/TaskListViewModel.dart';
 
 void main() async {
-  await DatabaseService.registerDataModels();
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseService.init();
+  NotificationManager.initLocalNotifications();
   runApp(const MyApp());
 }
 
