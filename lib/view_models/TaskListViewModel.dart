@@ -49,7 +49,7 @@ class TaskListViewModel extends BaseViewModel {
   }
 
   void markCompletedTask(TaskEntity taskEntity) async {
-    var setCompletedTaskUseCase = SetCompletedTaskUseCase(TaskRepoImp());
+    var setCompletedTaskUseCase = SetCompletedTaskUseCase();
     var result = await setCompletedTaskUseCase.invoke(SetCompletedTaskUseCaseParams(taskEntity.taskId));
 
     switch (result) {
@@ -87,7 +87,7 @@ class TaskListViewModel extends BaseViewModel {
   }
 
   void _fetchCompletedTasks(List<TaskEntity> tasks) async {
-    var taskListUseCase = FetchCompletedTasksUseCase(TaskRepoImp());
+    var taskListUseCase = FetchCompletedTasksUseCase();
     var result = await taskListUseCase.invoke(FetchCompletedTasksUseCaseParams(tasks));
 
     switch (result) {
@@ -104,7 +104,7 @@ class TaskListViewModel extends BaseViewModel {
   }
 
   void filterAndSortTasks() async {
-    var taskListUseCase = FetchFilteredAndSortedTasksUseCase(TaskRepoImp());
+    var taskListUseCase = FetchFilteredAndSortedTasksUseCase();
     var result = await taskListUseCase.invoke(FetchFilteredAndSortedTasksUseCaseParams(priority, label, sortBy, dueDate, query));
 
     switch (result) {
@@ -123,7 +123,7 @@ class TaskListViewModel extends BaseViewModel {
   }
 
   void fetchFilteredAndSortedCompletedTasks() async {
-    var taskListUseCase = FetchFilteredCompletedTasksUseCase(TaskRepoImp());
+    var taskListUseCase = FetchFilteredCompletedTasksUseCase();
     var result = await taskListUseCase.invoke(FetchFilteredCompletedTasksUseCaseParams(priority, label, sortBy, dueDate, query));
 
     switch (result) {

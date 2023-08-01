@@ -30,6 +30,10 @@ class TaskDbModel extends HiveObject {
     };
   }
 
+  String getTitle() {
+    return title;
+  }
+
   TaskDbModel(this.description,
       {required this.task_id, required this.task_priority, this.is_completed = 0, required this.due_date, required this.title, required this.task_label});
 

@@ -21,7 +21,7 @@ class CreateTaskViewModel extends BaseViewModel {
   }
 
   Future<void> saveTask() async {
-    var taskUseCase = SaveTaskUseCase(TaskRepoImp());
+    var taskUseCase = SaveTaskUseCase();
     var task = TaskEntity();
     task.taskId = 100;
     task.title = title;

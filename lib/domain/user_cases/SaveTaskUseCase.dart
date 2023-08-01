@@ -1,12 +1,13 @@
+import 'package:get_it/get_it.dart';
 import 'package:kotak_cherry/common/KotalResult.dart';
 import 'package:kotak_cherry/domain/user_cases/BaseUseCase.dart';
 import 'package:kotak_cherry/entity/TaskEntity.dart';
 
-class SaveTaskUseCase extends BaseUseCase<Future<Result<TaskEntity>>, SaveTaskUseCaseParams> {
-  @override
-  var taskRepository;
+import '../repository/TaskRepository.dart';
 
-  SaveTaskUseCase(this.taskRepository) : super(taskRepository);
+class SaveTaskUseCase extends BaseUseCase<Future<Result<TaskEntity>>, SaveTaskUseCaseParams> {
+
+  SaveTaskUseCase() : super(GetIt.instance<TaskRepository>());
 
   @override
   Future<Result<TaskEntity>> invoke(SaveTaskUseCaseParams params) {

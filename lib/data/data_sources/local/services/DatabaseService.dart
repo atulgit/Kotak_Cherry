@@ -24,7 +24,9 @@ class DatabaseService {
   static Future<Box<TaskDbModel>> get _database => Hive.openBox<TaskDbModel>(DBContants.TBL_Task);
 
   static final DatabaseService databaseService = DatabaseService._internal();
+
   factory DatabaseService() => databaseService;
+
   DatabaseService._internal();
 
   List<TaskDbModel> tasks = [
@@ -51,7 +53,7 @@ class DatabaseService {
           .where((element) =>
               (priority == -1 || element.task_priority == priority) &&
               (label == -1 || element.task_label == label) &&
-              (query.isEmpty || element.title.contains(query)) &&
+              (query.isEmpty || element.title.toLowerCase().contains(query.toLowerCase())) &&
               (dueDate.isEmpty || KCUtility.getFormattedDate(dueDate.trim()) == KCUtility.getFormattedDate(element.due_date.trim())))
           .toList());
     } catch (e) {
