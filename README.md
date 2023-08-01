@@ -33,13 +33,13 @@ lean and more clear. For Accessing local data, repository classes are used.
 
 Folder structure is explained below. (Only Root folders explained).
 
-Data Folder-> Implements Local and Remote data sources. (Only Local data in our case). "Data Repository" pattern is used to abstract data extraction.
+**Data Folder** -> Implements Local and Remote data sources. (Only Local data in our case). "Data Repository" pattern is used to abstract data extraction.
         It also contains Model Classes for data layer. Two folders for Data Repositories.
         Database Repository -> For implementing Remote or Local database methods. 
         Task Repository -> To consume data from Database repository. It can also consume multiple data repositories and convert to single data object 
         depending upon the requirement.
 
-Domain Folder-> It contains below use cases.
+**Domain Folder** -> It contains below use cases.
           BaseUseCase -> Defines Repository object & invoke method.
           FetchTaskListUseCase -> Get all tasks from local database.
           SaveTaskUseCase -> Save task to database.
@@ -50,9 +50,9 @@ Domain Folder-> It contains below use cases.
           
           This folder also contains BaseRepository & TaskRepository interface, which are imlemented in data folder.
 
-Entity Folder-> It contains entities used throughout the app. 'BaseEntity' & 'TaskEntity'.
+**Entity Folder** -> It contains entities used throughout the app. 'BaseEntity' & 'TaskEntity'.
 
-UI Folder-> It contains all common UI views and components, Feature folders (Create Task, Task List). It contains flutter widgets.
+**UI Folder**-> It contains all common UI views and components, Feature folders (Create Task, Task List). It contains flutter widgets.
 
 View Models Folder -> It contains View Models which uses 'Provider State Management' library.
 
@@ -67,18 +67,18 @@ UI Layer -> View Models -> Use Cases -> Task Repo -> Database Repo -> Database S
 5. 'ViewModels' consumes data from UseCases classes and provides data to Flutter Widgets (UI or Presentation Layer).
 
 ## Architectural Implementation
-1. 'DatabaseService' is a singleton class which will consume data from Hive database. This is simple key bases database.
+1. **'DatabaseService'** is a singleton class which will consume data from Hive database. This is simple key bases database.
    Note: For more complex scenarios and scalable app, SQlite will be used. I have avoided SQLite for now for simplistic implementation.
-2. Repository pattern is used for Data. It defines abstract interface, defining all methods which are required for task features. In our cases,
+2. **Repository Pattern** is used for Data. It defines abstract interface, defining all methods which are required for task features. In our cases,
    there is only one implementation for Repository Imp i.e DatabaseRepoImp. (As no API service is used). If there are multiple data sources to be
    consume, multiple implementations will created.
-3. TaskRepo interface is used handle multiple implementations. (Makes more sense in complex business apps).
-4. Uses Cases: This will handle the app's business logic, e.g Filtering, Sorting etc. Then same Use Cases can be consumes in multiple View Models
+3. **TaskRepo** interface is used handle multiple implementations. (Makes more sense in complex business apps).
+4. **Uses Cases**: This will handle the app's business logic, e.g Filtering, Sorting etc. Then same Use Cases can be consumes in multiple View Models
    , keeping View Models clean, maintainable. It also help reusing same business logic code in multiple VMs.
 5. Using View Models & Domain Use Cases, helps to implement cleaner Unit Test Cases.
-6. Notifications: Only local notifications are implemented. No FCM is used. Flutter Library: 'awesome_notifications'. Toast notification is not 
+6. **Notifications:** Only local notifications are implemented. No FCM is used. Flutter Library: 'awesome_notifications'. Toast notification is not 
    supported by this library. You will be able to see scheduled notification in 'Notification Center' of the android phone.
-7. Error Handling: Using Result class is created. Result class have two subtypes: Success and Failure, which will return the either of the instance
+7. **Error Handling:** Using Result class is created. Result class have two subtypes: Success and Failure, which will return the either of the instance
    depending upon the Success or Failure of the code.
 
 ## Supported Platforms
