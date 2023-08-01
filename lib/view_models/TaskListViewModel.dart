@@ -67,7 +67,7 @@ class TaskListViewModel extends BaseViewModel {
   }
 
   void fetchTaskList() async {
-    var taskListUseCase = FetchTaskListUseCase(TaskRepoImp());
+    var taskListUseCase = FetchTaskListUseCase();
     var result = await taskListUseCase.invoke(FetchTaskListUseCaseParams());
 
     switch (result) {

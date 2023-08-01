@@ -20,6 +20,7 @@ class TaskDbModelAdapter extends TypeAdapter<TaskDbModel> {
       fields[4] as String,
       task_id: fields[0] as String,
       task_priority: fields[1] as int,
+      is_completed: fields[6] as int,
       due_date: fields[5] as String,
       title: fields[3] as String,
       task_label: fields[2] as int,
@@ -29,7 +30,7 @@ class TaskDbModelAdapter extends TypeAdapter<TaskDbModel> {
   @override
   void write(BinaryWriter writer, TaskDbModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.task_id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class TaskDbModelAdapter extends TypeAdapter<TaskDbModel> {
       ..writeByte(4)
       ..write(obj.description)
       ..writeByte(5)
-      ..write(obj.due_date);
+      ..write(obj.due_date)
+      ..writeByte(6)
+      ..write(obj.is_completed);
   }
 
   @override

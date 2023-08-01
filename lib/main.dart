@@ -1,16 +1,24 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:kotak_cherry/data/RepoImp/TaskRepoImp.dart';
 import 'package:kotak_cherry/data/data_sources/local/services/DatabaseService.dart';
+import 'package:kotak_cherry/domain/repository/TaskRepository.dart';
 import 'package:kotak_cherry/ui/common/AppConstants.dart';
 import 'package:kotak_cherry/ui/common/NotificationManager.dart';
 import 'package:kotak_cherry/ui/common/RouteGenerator.dart';
 import 'package:kotak_cherry/view_models/CreateTaskViewModel.dart';
 import 'package:kotak_cherry/view_models/TaskListViewModel.dart';
 
+GetIt getIt = GetIt.instance;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseService.init();
   NotificationManager.initLocalNotifications();
+
+  getIt.registerSingleton<TaskRepository>(TaskRepoImp(), signalsReady: true);
+
   runApp(const MyApp());
 }
 
