@@ -23,6 +23,8 @@ INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/main/AndroidManifest
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/main/AndroidManifest.xml:1:1-33:12
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/main/AndroidManifest.xml:1:1-33:12
 MERGED from /Users/atulkumar/kotak_cherry/android/app/src/main/AndroidManifest.xml:1:1-33:12
+MERGED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-19:12
+MERGED from [:flutter_plugin_android_lifecycle] /Users/atulkumar/kotak_cherry/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:awesome_notifications] /Users/atulkumar/kotak_cherry/build/awesome_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-38:12
 MERGED from [:sqflite] /Users/atulkumar/kotak_cherry/build/sqflite/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:path_provider_android] /Users/atulkumar/kotak_cherry/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
@@ -43,7 +45,6 @@ MERGED from [androidx.customview:customview:1.0.0] /Users/atulkumar/.gradle/cach
 MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/7452f5f3cbe2f9f7b119f33b5185d3c0/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/c17cf266156de71799199302788a6c34/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.core:core:1.7.0] /Users/atulkumar/.gradle/caches/transforms-3/57d13c65eae90a7945dea98c1aa2b720/transformed/core-1.7.0/AndroidManifest.xml:17:1-26:12
-MERGED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:2:1-52:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/52209f20efc31613e6a8da15f7614461/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/ddb9122fd4175dd0653534cd0e93b5cd/transformed/jetified-lifecycle-viewmodel-savedstate-2.4.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/64a9aafcf78e52ceb3fd346e0d5b5584/transformed/lifecycle-viewmodel-2.4.0/AndroidManifest.xml:17:1-24:12
@@ -62,6 +63,7 @@ MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/atulkumar/.gradle/
 MERGED from [androidx.print:print:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/c24f99b8bdfeb14f29b2ef7a86a4db48/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/860a920bd188d8e467960610e541a595/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/9cc12674340416d986d3f85facb4cb0b/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:2:1-52:12
 MERGED from [androidx.annotation:annotation-experimental:1.1.0] /Users/atulkumar/.gradle/caches/transforms-3/6c0c163cc77ae6c91f9f7dfcd179c29c/transformed/jetified-annotation-experimental-1.1.0/AndroidManifest.xml:17:1-24:12
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/debug/AndroidManifest.xml:1:1-7:12
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/debug/AndroidManifest.xml:1:1-7:12
@@ -84,6 +86,10 @@ uses-sdk
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/main/AndroidManifest.xml
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/main/AndroidManifest.xml
+MERGED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_plugin_android_lifecycle] /Users/atulkumar/kotak_cherry/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_plugin_android_lifecycle] /Users/atulkumar/kotak_cherry/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:awesome_notifications] /Users/atulkumar/kotak_cherry/build/awesome_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:awesome_notifications] /Users/atulkumar/kotak_cherry/build/awesome_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:sqflite] /Users/atulkumar/kotak_cherry/build/sqflite/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
@@ -124,8 +130,6 @@ MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/atul
 MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/c17cf266156de71799199302788a6c34/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core:1.7.0] /Users/atulkumar/.gradle/caches/transforms-3/57d13c65eae90a7945dea98c1aa2b720/transformed/core-1.7.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.core:core:1.7.0] /Users/atulkumar/.gradle/caches/transforms-3/57d13c65eae90a7945dea98c1aa2b720/transformed/core-1.7.0/AndroidManifest.xml:20:5-22:41
-MERGED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:7:5-9:41
-MERGED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/52209f20efc31613e6a8da15f7614461/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/52209f20efc31613e6a8da15f7614461/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/ddb9122fd4175dd0653534cd0e93b5cd/transformed/jetified-lifecycle-viewmodel-savedstate-2.4.0/AndroidManifest.xml:20:5-22:41
@@ -162,6 +166,8 @@ MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/atulkumar/.gradle/
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/860a920bd188d8e467960610e541a595/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/9cc12674340416d986d3f85facb4cb0b/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/9cc12674340416d986d3f85facb4cb0b/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:7:5-9:41
+MERGED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.annotation:annotation-experimental:1.1.0] /Users/atulkumar/.gradle/caches/transforms-3/6c0c163cc77ae6c91f9f7dfcd179c29c/transformed/jetified-annotation-experimental-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.annotation:annotation-experimental:1.1.0] /Users/atulkumar/.gradle/caches/transforms-3/6c0c163cc77ae6c91f9f7dfcd179c29c/transformed/jetified-annotation-experimental-1.1.0/AndroidManifest.xml:20:5-22:41
 INJECTED from /Users/atulkumar/kotak_cherry/android/app/src/debug/AndroidManifest.xml
@@ -176,6 +182,22 @@ uses-permission#android.permission.INTERNET
 ADDED from /Users/atulkumar/kotak_cherry/android/app/src/debug/AndroidManifest.xml:6:5-66
 	android:name
 		ADDED from /Users/atulkumar/kotak_cherry/android/app/src/debug/AndroidManifest.xml:6:22-64
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-80
+	android:name
+		ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-77
+queries
+ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:15
+intent#action:name:android.intent.action.GET_CONTENT+data:mimeType:*/*
+ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:18
+action#android.intent.action.GET_CONTENT
+ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-72
+	android:name
+		ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:21-69
+data
+ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
+	android:mimeType
+		ADDED from [:file_picker] /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:19-41
 uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
 ADDED from [:awesome_notifications] /Users/atulkumar/kotak_cherry/build/awesome_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-81
 	android:name
@@ -250,6 +272,24 @@ ADDED from [androidx.window:window:1.0.0-beta04] /Users/atulkumar/.gradle/caches
 		ADDED from [androidx.window:window:1.0.0-beta04] /Users/atulkumar/.gradle/caches/transforms-3/25cee5f028ac2a6b79fd6278ff5b59e2/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
 	android:name
 		ADDED from [androidx.window:window:1.0.0-beta04] /Users/atulkumar/.gradle/caches/transforms-3/25cee5f028ac2a6b79fd6278ff5b59e2/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:26:9-34:20
+MERGED from [androidx.startup:startup-runtime:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/51ebb132c7fa329ff7b390804f6d4148/transformed/jetified-startup-runtime-1.0.0/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/51ebb132c7fa329ff7b390804f6d4148/transformed/jetified-startup-runtime-1.0.0/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:30:13-31
+	android:authorities
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:28:13-68
+	android:exported
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:29:13-37
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:27:13-67
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:31:13-33:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:33:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:32:17-78
 uses-permission#com.sec.android.provider.badge.permission.READ
 ADDED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:19:5-86
 	android:name
@@ -314,21 +354,3 @@ uses-permission#me.everything.badger.permission.BADGE_COUNT_WRITE
 ADDED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:50:5-89
 	android:name
 		ADDED from [me.leolin:ShortcutBadger:1.1.22] /Users/atulkumar/.gradle/caches/transforms-3/b0389fa7cbcb973eb70356eb385c55ee/transformed/jetified-ShortcutBadger-1.1.22/AndroidManifest.xml:50:22-86
-provider#androidx.startup.InitializationProvider
-ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:26:9-34:20
-MERGED from [androidx.startup:startup-runtime:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/51ebb132c7fa329ff7b390804f6d4148/transformed/jetified-startup-runtime-1.0.0/AndroidManifest.xml:26:9-30:34
-MERGED from [androidx.startup:startup-runtime:1.0.0] /Users/atulkumar/.gradle/caches/transforms-3/51ebb132c7fa329ff7b390804f6d4148/transformed/jetified-startup-runtime-1.0.0/AndroidManifest.xml:26:9-30:34
-	tools:node
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:30:13-31
-	android:authorities
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:28:13-68
-	android:exported
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:29:13-37
-	android:name
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:27:13-67
-meta-data#androidx.lifecycle.ProcessLifecycleInitializer
-ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:31:13-33:52
-	android:value
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:33:17-49
-	android:name
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.0] /Users/atulkumar/.gradle/caches/transforms-3/f31cdfb213b879077c244df043816118/transformed/jetified-lifecycle-process-2.4.0/AndroidManifest.xml:32:17-78

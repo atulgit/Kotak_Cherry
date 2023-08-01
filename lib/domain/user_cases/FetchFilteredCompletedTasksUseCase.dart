@@ -2,12 +2,12 @@ import 'package:get_it/get_it.dart';
 
 import '../../common/KotalResult.dart';
 import '../../entity/TaskEntity.dart';
-import '../repository/TaskRepository.dart';
+import '../repository/ITaskRepository.dart';
 import 'BaseUseCase.dart';
 import 'FetchFilteredAndSortedTasksUseCase.dart';
 
 class FetchFilteredCompletedTasksUseCase extends BaseUseCase<Future<Result<List<TaskEntity>>>, FetchFilteredCompletedTasksUseCaseParams> {
-  FetchFilteredCompletedTasksUseCase() : super(GetIt.instance<TaskRepository>());
+  FetchFilteredCompletedTasksUseCase() : super(GetIt.instance<ITaskRepository>());
 
   @override
   Future<Result<List<TaskEntity>>> invoke(FetchFilteredCompletedTasksUseCaseParams params) async {

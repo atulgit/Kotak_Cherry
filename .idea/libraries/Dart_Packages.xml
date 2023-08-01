@@ -191,6 +191,13 @@
             </list>
           </value>
         </entry>
+        <entry key="file_picker">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/file_picker-5.3.3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="fixnum">
           <value>
             <list>
@@ -212,10 +219,24 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_plugin_android_lifecycle">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.15/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_test">
           <value>
             <list>
               <option value="$PROJECT_DIR$/../Desktop/flutter/packages/flutter_test/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_web_plugins">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../Desktop/flutter/packages/flutter_web_plugins/lib" />
             </list>
           </value>
         </entry>
@@ -655,8 +676,10 @@
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/fake_async-1.3.1/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/ffi-2.0.2/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/file-7.0.0/lib" />
+      <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/file_picker-5.3.3/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/fixnum-1.1.0/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flutter_lints-2.0.2/lib" />
+      <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.15/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/frontend_server_client-3.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/get_it-7.6.0/lib" />
       <root url="file://$PROJECT_DIR$/../.pub-cache/hosted/pub.dev/glob-2.1.2/lib" />
@@ -717,6 +740,7 @@
       <root url="file://$PROJECT_DIR$/../Desktop/flutter/bin/cache/pkg/sky_engine/lib" />
       <root url="file://$PROJECT_DIR$/../Desktop/flutter/packages/flutter/lib" />
       <root url="file://$PROJECT_DIR$/../Desktop/flutter/packages/flutter_test/lib" />
+      <root url="file://$PROJECT_DIR$/../Desktop/flutter/packages/flutter_web_plugins/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

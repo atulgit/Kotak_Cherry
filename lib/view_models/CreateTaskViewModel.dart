@@ -4,6 +4,7 @@ import 'package:kotak_cherry/view_models/BaseViewModel.dart';
 import '../common/KotalResult.dart';
 import '../data/RepoImp/TaskRepoImp.dart';
 import '../domain/user_cases/SaveTaskUseCase.dart';
+import '../entity/AttachmentEntity.dart';
 import '../entity/TaskEntity.dart';
 
 class CreateTaskViewModel extends BaseViewModel {
@@ -14,6 +15,8 @@ class CreateTaskViewModel extends BaseViewModel {
   String title = "";
   String description = "";
   TimeOfDay? notificationTime;
+
+  List<TaskAttachmentEntity> attachments = [];
 
   void setNotificationTime(TimeOfDay timeOfDay) {
     notificationTime = timeOfDay;
@@ -30,7 +33,7 @@ class CreateTaskViewModel extends BaseViewModel {
     task.dueDate = dueDate;
     task.isCompleted = -1;
 
-    var taskUseCaseParam = SaveTaskUseCaseParams(task);
+    var taskUseCaseParam = SaveTaskUseCaseParams(task, attachments: attachments);
     var result = await taskUseCase.invoke(taskUseCaseParam);
     switch (result) {
       case Success<TaskEntity>():

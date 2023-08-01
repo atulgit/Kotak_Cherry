@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:kotak_cherry/data/RepoImp/TaskRepoImp.dart';
 import 'package:kotak_cherry/data/data_sources/local/services/DatabaseService.dart';
 import 'package:kotak_cherry/dependency_injection/DependecyInitializer.dart';
-import 'package:kotak_cherry/domain/repository/TaskRepository.dart';
+import 'package:kotak_cherry/domain/repository/ITaskRepository.dart';
 import 'package:kotak_cherry/ui/common/AppConstants.dart';
 import 'package:kotak_cherry/ui/common/NotificationManager.dart';
 import 'package:kotak_cherry/ui/common/RouteGenerator.dart';

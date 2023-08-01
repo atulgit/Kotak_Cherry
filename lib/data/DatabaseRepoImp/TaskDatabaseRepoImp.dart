@@ -1,7 +1,9 @@
 import 'package:kotak_cherry/common/KotalResult.dart';
 import 'package:kotak_cherry/data/data_sources/local/services/DatabaseService.dart';
+import 'package:kotak_cherry/data/models/TaskAttachmentDbModel.dart';
 import 'package:kotak_cherry/data/models/TaskDbModel.dart';
 import 'package:kotak_cherry/data/respository/TaskRespositoryDatabase.dart';
+import 'package:kotak_cherry/entity/AttachmentEntity.dart';
 import 'package:kotak_cherry/entity/TaskEntity.dart';
 
 class TaskDatabaseRepoImp implements TaskRepositoryDatabase {
@@ -38,6 +40,10 @@ class TaskDatabaseRepoImp implements TaskRepositoryDatabase {
         due_date: taskEntity.dueDate,
         title: taskEntity.title,
         is_completed: taskEntity.isCompleted);
+  }
+
+  TaskAttachmentDbModel _mapToTaskAttachmentModel(TaskAttachmentEntity taskEntity) {
+    return TaskAttachmentDbModel(taskEntity.taskId, taskEntity.name, taskEntity.attachmentId, taskEntity.url, taskEntity.type);
   }
 
   // @override
@@ -100,6 +106,23 @@ class TaskDatabaseRepoImp implements TaskRepositoryDatabase {
         return Success(_mapToTaskEntity(taskModel.value));
 
       case Failure<TaskDbModel>():
+        return const Failure();
+    }
+  }
+
+  @override
+  Future<Result> saveAttachments(List<TaskAttachmentEntity> attachments) async {
+    List<TaskAttachmentDbModel> attachmentDbList = [];
+    attachments.map((e) {
+      attachmentDbList.add(_mapToTaskAttachmentModel(e));
+    });
+
+    var result = await _dbService.saveAttachments(attachmentDbList);
+    switch (result) {
+      case Success<void>():
+        return Success<void>(result.value);
+
+      case Failure<void>():
         return const Failure();
     }
   }

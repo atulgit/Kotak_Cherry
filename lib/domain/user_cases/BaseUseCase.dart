@@ -1,8 +1,8 @@
 import 'package:kotak_cherry/domain/repository/BaseRepository.dart';
-import 'package:kotak_cherry/domain/repository/TaskRepository.dart';
+import 'package:kotak_cherry/domain/repository/ITaskRepository.dart';
 
 abstract class BaseUseCase<T, R> {
-  TaskRepository taskRepository;
+  ITaskRepository taskRepository;
 
   BaseUseCase(this.taskRepository);
 

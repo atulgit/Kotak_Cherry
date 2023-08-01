@@ -1,10 +1,11 @@
 import 'package:kotak_cherry/common/KotalResult.dart';
 import 'package:kotak_cherry/data/DatabaseRepoImp/TaskDatabaseRepoImp.dart';
 import 'package:kotak_cherry/data/respository/TaskRespositoryDatabase.dart';
-import 'package:kotak_cherry/domain/repository/TaskRepository.dart';
+import 'package:kotak_cherry/domain/repository/ITaskRepository.dart';
+import 'package:kotak_cherry/entity/AttachmentEntity.dart';
 import 'package:kotak_cherry/entity/TaskEntity.dart';
 
-class TaskRepoImp implements TaskRepository {
+class TaskRepoImp implements ITaskRepository {
   late TaskRepositoryDatabase taskRepositoryDatabase = TaskDatabaseRepoImp();
 
   @override
@@ -30,5 +31,10 @@ class TaskRepoImp implements TaskRepository {
   @override
   Future<Result<TaskEntity>> setTaskCompleted(int taskId) {
     return taskRepositoryDatabase.setCompletedTask(taskId);
+  }
+
+  @override
+  Future<Result> saveAttachments(List<TaskAttachmentEntity> attachments) {
+    return taskRepositoryDatabase.saveAttachments(attachments);
   }
 }

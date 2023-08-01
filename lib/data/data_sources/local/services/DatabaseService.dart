@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:kotak_cherry/common/KCUtility.dart';
 import 'package:kotak_cherry/data/data_sources/local/DBConstants.dart';
+import 'package:kotak_cherry/data/models/TaskAttachmentDbModel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,7 +22,9 @@ class DatabaseService {
     }
   }
 
-  static Future<Box<TaskDbModel>> get _database => Hive.openBox<TaskDbModel>(DBContants.TBL_Task);
+  static Future<Box<TaskDbModel>> get _database_tasks => Hive.openBox<TaskDbModel>(DBContants.TBL_Task);
+
+  static Future<Box<TaskAttachmentDbModel>> get _database_attachments => Hive.openBox<TaskAttachmentDbModel>(DBContants.TBL_Attachments);
 
   static final DatabaseService databaseService = DatabaseService._internal();
 
@@ -46,7 +49,7 @@ class DatabaseService {
 
   Future<Result<List<TaskDbModel>>> fetchSortedAndFilteredTask(int priority, int label, String dueDate, int sortBy, String query) async {
     try {
-      final database = await _database;
+      final database = await _database_tasks;
       tasks = database.values.toList();
 
       return Success<List<TaskDbModel>>(tasks
@@ -63,7 +66,7 @@ class DatabaseService {
 
   Future<Result<List<TaskDbModel>>> fetchTaskList() async {
     try {
-      final database = await _database;
+      final database = await _database_tasks;
       tasks = database.values.toList();
 
       return Success<List<TaskDbModel>>(tasks);
@@ -74,7 +77,7 @@ class DatabaseService {
 
   Future<Result<TaskDbModel>> setCompletedTask(int taskId) async {
     try {
-      final database = await _database;
+      final database = await _database_tasks;
       var task = database.get(taskId);
       task?.is_completed = 1;
       database.put(taskId, task!);
@@ -87,11 +90,24 @@ class DatabaseService {
 
   Future<Result<TaskDbModel>> saveTask(TaskDbModel taskDbModel) async {
     try {
-      final database = await _database;
+      final database = await _database_tasks;
       await database.add(taskDbModel);
 
       tasks.add(taskDbModel);
       return Success<TaskDbModel>(taskDbModel);
+    } catch (e) {
+      return const Failure();
+    }
+  }
+
+  Future<Result> saveAttachments(List<TaskAttachmentDbModel> attachments) async {
+    try {
+      final database = await _database_attachments;
+      attachments.map((e) async {
+        await database.add(e);
+      });
+
+      return const Success<void>(1);
     } catch (e) {
       return const Failure();
     }
