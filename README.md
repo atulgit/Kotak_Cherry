@@ -17,6 +17,7 @@ This simple will helps you to create and view list of tasks. This project is cre
 3. Schedule Task Alerts and Notifications
 4. Filter task list with 'Priority', 'Label' & 'Due Date'.
 5. Sort task list with 'Priority' OR 'Due Date'
+6. File attachments with Task.
 
 ## Kotak Cherry Task Management App Architecture Components
 1. MVVM with Clean Architecture (Domain Layer)
@@ -40,13 +41,13 @@ Folder structure is explained below. (Only Root folders explained).
         depending upon the requirement.
 
 **Domain Folder** -> It contains below use cases.
-          BaseUseCase -> Defines Repository object & invoke method.
-          FetchTaskListUseCase -> Get all tasks from local database.
-          SaveTaskUseCase -> Save task to database.
-          SetCompletedTaskUseCase -> Mark task as 'completed' and saves to database.
-          FetchCompletedTasksUseCase -> Get all completed tasks from database.
-          FetchFilteredAndSortedTasksUseCase -> Get all tasks using filters and sort options.
-          FetchFilteredCompletedTasksUseCase -> Get all completed tasks using filters and sort options.
+          <p>BaseUseCase -> Defines Repository object & invoke method.</p>
+          <p>FetchTaskListUseCase -> Get all tasks from local database.</p>
+          <p>SaveTaskUseCase -> Save task to database.</p>
+          <p>SetCompletedTaskUseCase -> Mark task as 'completed' and saves to database.</p>
+          <p>FetchCompletedTasksUseCase -> Get all completed tasks from database.</p>
+          <p>FetchFilteredAndSortedTasksUseCase -> Get all tasks using filters and sort options.</p>
+          <p>FetchFilteredCompletedTasksUseCase -> Get all completed tasks using filters and sort options.</p>
           
           This folder also contains BaseRepository & TaskRepository interface, which are imlemented in data folder.
 
@@ -90,11 +91,6 @@ Note: I have tested this app and UI only on Android OS.
 2. No relation database is used to keep the development effort to minimal.
 3. App is not tested in iOS and Web.
 
-Here is how the data will flow from data layer to presentation layer.
-
-
-
-
 ## Pointers
 1. Dependency injection
 2. Reason for not using SQLite
@@ -103,13 +99,3 @@ Here is how the data will flow from data layer to presentation layer.
 5. Error Handing
 6. Why use cases used.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
