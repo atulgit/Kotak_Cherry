@@ -1,4 +1,4 @@
-# Kotal Cherry Task Management App
+# Kotak Cherry Task Management App
 
 This simple will helps you to create and view list of tasks. This project is created from scratch.
 
