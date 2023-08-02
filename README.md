@@ -89,7 +89,7 @@ Android, Web, iOS
 Note: I have tested this app and UI only on Android OS.
 
 ## Known Bugs and Limitations
-1. Scheduled notification for Tasks will not show Toast.
+1. Scheduled notification for Tasks will not show Toast. Notification will be shown only on notification center of the OS.
 2. No relation database is used to keep the development effort to minimal.
 3. App is not tested in iOS and Web.
 
