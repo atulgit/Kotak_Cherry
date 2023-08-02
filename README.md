@@ -18,6 +18,7 @@ This simple will helps you to create and view list of tasks. This project is cre
 4. Filter task list with 'Priority', 'Label' & 'Due Date'.
 5. Sort task list with 'Priority' OR 'Due Date'
 6. File attachments with Task.
+7. Mark task as Completed & view list of completed tasks.
 
 ## Kotak Cherry Task Management App Architecture Components
 1. MVVM with Clean Architecture (Domain Layer)
@@ -55,11 +56,11 @@ Folder structure is explained below. (Only Root folders explained).
 
 **UI Folder**-> It contains all common UI views and components, Feature folders (Create Task, Task List). It contains flutter widgets.
 
-View Models Folder -> It contains View Models which uses 'Provider State Management' library.
+**View Models Folder** -> It contains View Models which uses 'Provider State Management' library.
 
 ## Data Flow (For Data Layer to Presentation Layer & vice-versa)
 
-UI Layer -> View Models -> Use Cases -> Task Repo -> Database Repo -> Database Service.
+<em>UI Layer -> View Models -> Use Cases -> Task Repo -> Database Repo -> Database Service.</em>
 
 1. 'DatabaseService' saves and retrieves data model objects from Local Database (Hive).
 2. 'DatabaseRepoImp' class retrieves data from 'DataService' & maps to Entity classes.
@@ -73,7 +74,7 @@ UI Layer -> View Models -> Use Cases -> Task Repo -> Database Repo -> Database S
 2. **Repository Pattern** is used for Data. It defines abstract interface, defining all methods which are required for task features. In our cases,
    there is only one implementation for Repository Imp i.e DatabaseRepoImp. (As no API service is used). If there are multiple data sources to be
    consume, multiple implementations will created.
-3. **TaskRepo** interface is used handle multiple implementations. (Makes more sense in complex business apps).
+3. **TaskRepo** interface is used to handle multiple implementations. (Makes more sense in complex business apps).
 4. **Uses Cases**: This will handle the app's business logic, e.g Filtering, Sorting etc. Then same Use Cases can be consumes in multiple View Models
    , keeping View Models clean, maintainable. It also help reusing same business logic code in multiple VMs.
 5. Using View Models & Domain Use Cases, helps to implement cleaner Unit Test Cases.
@@ -81,7 +82,7 @@ UI Layer -> View Models -> Use Cases -> Task Repo -> Database Repo -> Database S
    supported by this library. You will be able to see scheduled notification in 'Notification Center' of the android phone.
 7. **Error Handling:** Using Result class is created. Result class have two subtypes: Success and Failure, which will return the either of the instance
    depending upon the Success or Failure of the code.
-8. Dependency Injection: Package used is Get_it, for injecting Repository dependencies.
+8. **Dependency Injection:** Package used is Get_it, for injecting Repository dependencies.
 
 ## Supported Platforms
 Android, Web, iOS
