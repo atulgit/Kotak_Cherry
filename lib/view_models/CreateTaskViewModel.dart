@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kotak_cherry/view_models/BaseViewModel.dart';
 
-import '../common/KotalResult.dart';
+import '../common/KCResult.dart';
 import '../data/RepoImp/TaskRepoImp.dart';
 import '../domain/user_cases/SaveTaskUseCase.dart';
 import '../entity/AttachmentEntity.dart';
 import '../entity/TaskEntity.dart';
+import '../ui/common/AppConstants.dart';
 
 class CreateTaskViewModel extends BaseViewModel {
   int taskId = -1;
@@ -16,11 +17,17 @@ class CreateTaskViewModel extends BaseViewModel {
   String description = "";
   TimeOfDay? notificationTime;
 
-  List<TaskAttachmentEntity> attachments = [];
+  final ValueNotifier<String> errorListener = ValueNotifier<String>('');
+
+  final List<TaskAttachmentEntity> _attachments = [];
 
   void setNotificationTime(TimeOfDay timeOfDay) {
     notificationTime = timeOfDay;
     notifyListeners();
+  }
+
+  void addAttachment(TaskAttachmentEntity attachmentEntity) {
+    _attachments.add(attachmentEntity);
   }
 
   Future<void> saveTask() async {
@@ -29,11 +36,12 @@ class CreateTaskViewModel extends BaseViewModel {
     task.taskId = 100;
     task.title = title;
     task.taskPriority = priority;
+    task.description = description;
     task.taskLabel = label;
     task.dueDate = dueDate;
     task.isCompleted = -1;
 
-    var taskUseCaseParam = SaveTaskUseCaseParams(task, attachments: attachments);
+    var taskUseCaseParam = SaveTaskUseCaseParams(task, attachments: _attachments);
     var result = await taskUseCase.invoke(taskUseCaseParam);
     switch (result) {
       case Success<TaskEntity>():
@@ -41,7 +49,9 @@ class CreateTaskViewModel extends BaseViewModel {
         break;
 
       case Failure<TaskEntity>():
-      // TODO: Handle this case.
+        errorListener.value = AppConstants.ERROR_MESSAGE;
+        notifyListeners();
+        break;
     }
 
     notifyListeners();

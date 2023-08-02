@@ -1,4 +1,5 @@
-import 'package:kotak_cherry/common/KotalResult.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:kotak_cherry/common/KCResult.dart';
 import 'package:kotak_cherry/data/RepoImp/TaskRepoImp.dart';
 import 'package:kotak_cherry/domain/user_cases/BaseUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/FetchCompletedTasksUseCase.dart';
@@ -10,11 +11,14 @@ import 'package:kotak_cherry/domain/user_cases/SaveTaskUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/SetCompletedTaskUseCase.dart';
 import 'package:kotak_cherry/domain/user_cases/TaskUseCase.dart';
 import 'package:kotak_cherry/entity/TaskEntity.dart';
+import 'package:kotak_cherry/ui/common/AppConstants.dart';
 import 'package:kotak_cherry/view_models/BaseViewModel.dart';
 
 class TaskListViewModel extends BaseViewModel {
   List<TaskEntity> taskList = [];
   List<TaskEntity> completedTaskList = [];
+
+  final ValueNotifier<String> errorListener = ValueNotifier<String>('');
 
   int taskId = -1;
   int priority = -1;
@@ -33,7 +37,9 @@ class TaskListViewModel extends BaseViewModel {
         break;
 
       case Failure<TaskEntity>():
-      // TODO: Handle this case.
+        errorListener.value = AppConstants.ERROR_MESSAGE;
+        notifyListeners();
+        break;
     }
 
     notifyListeners();
@@ -62,6 +68,8 @@ class TaskListViewModel extends BaseViewModel {
         break;
 
       case Failure<TaskEntity>():
+        errorListener.value = AppConstants.ERROR_MESSAGE;
+        notifyListeners();
         break;
     }
   }
@@ -80,6 +88,8 @@ class TaskListViewModel extends BaseViewModel {
         break;
 
       case Failure<List<TaskEntity>>():
+        errorListener.value = AppConstants.ERROR_MESSAGE;
+        notifyListeners();
         break;
     }
 
@@ -99,6 +109,8 @@ class TaskListViewModel extends BaseViewModel {
         break;
 
       case Failure<List<TaskEntity>>():
+        errorListener.value = AppConstants.ERROR_MESSAGE;
+        notifyListeners();
         break;
     }
   }
@@ -116,6 +128,8 @@ class TaskListViewModel extends BaseViewModel {
         break;
 
       case Failure<List<TaskEntity>>():
+        errorListener.value = AppConstants.ERROR_MESSAGE;
+        notifyListeners();
         break;
     }
 
@@ -135,6 +149,8 @@ class TaskListViewModel extends BaseViewModel {
         break;
 
       case Failure<List<TaskEntity>>():
+        errorListener.value = AppConstants.ERROR_MESSAGE;
+        notifyListeners();
         break;
     }
   }

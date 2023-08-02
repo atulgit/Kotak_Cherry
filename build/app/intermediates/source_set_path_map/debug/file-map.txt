@@ -22,5 +22,7 @@ com.example.kotak_cherry.app-mergeDebugResources-20 /Users/atulkumar/kotak_cherr
 com.example.kotak_cherry.app-mergeDebugResources-21 /Users/atulkumar/kotak_cherry/build/app/intermediates/incremental/debug/mergeDebugResources/stripped.dir
 com.example.kotak_cherry.app-merged_res-22 /Users/atulkumar/kotak_cherry/build/app/intermediates/merged_res/debug
 com.example.kotak_cherry.app-packaged_res-23 /Users/atulkumar/kotak_cherry/build/awesome_notifications/intermediates/packaged_res/debug
-com.example.kotak_cherry.app-packaged_res-24 /Users/atulkumar/kotak_cherry/build/path_provider_android/intermediates/packaged_res/debug
-com.example.kotak_cherry.app-packaged_res-25 /Users/atulkumar/kotak_cherry/build/sqflite/intermediates/packaged_res/debug
+com.example.kotak_cherry.app-packaged_res-24 /Users/atulkumar/kotak_cherry/build/file_picker/intermediates/packaged_res/debug
+com.example.kotak_cherry.app-packaged_res-25 /Users/atulkumar/kotak_cherry/build/flutter_plugin_android_lifecycle/intermediates/packaged_res/debug
+com.example.kotak_cherry.app-packaged_res-26 /Users/atulkumar/kotak_cherry/build/path_provider_android/intermediates/packaged_res/debug
+com.example.kotak_cherry.app-packaged_res-27 /Users/atulkumar/kotak_cherry/build/sqflite/intermediates/packaged_res/debug

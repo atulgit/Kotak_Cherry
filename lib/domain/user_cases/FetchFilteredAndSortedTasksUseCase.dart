@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 
-import '../../common/KotalResult.dart';
+import '../../common/KCResult.dart';
 import '../../entity/TaskEntity.dart';
 import '../repository/ITaskRepository.dart';
 import 'BaseUseCase.dart';

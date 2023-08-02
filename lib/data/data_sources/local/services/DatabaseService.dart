@@ -6,7 +6,7 @@ import 'package:kotak_cherry/data/models/TaskAttachmentDbModel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../common/KotalResult.dart';
+import '../../../../common/KCResult.dart';
 import '../../../models/TaskDbModel.dart';
 
 class DatabaseService {
@@ -57,7 +57,7 @@ class DatabaseService {
               (priority == -1 || element.task_priority == priority) &&
               (label == -1 || element.task_label == label) &&
               (query.isEmpty || element.title.toLowerCase().contains(query.toLowerCase())) &&
-              (dueDate.isEmpty || KCUtility.getFormattedDate(dueDate.trim()) == KCUtility.getFormattedDate(element.due_date.trim())))
+              (dueDate.isEmpty || KCUtility.getFormattedDateFromString(dueDate.trim()) == KCUtility.getFormattedDateFromString(element.due_date.trim())))
           .toList());
     } catch (e) {
       return const Failure();

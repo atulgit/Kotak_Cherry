@@ -80,6 +80,7 @@ UI Layer -> View Models -> Use Cases -> Task Repo -> Database Repo -> Database S
    supported by this library. You will be able to see scheduled notification in 'Notification Center' of the android phone.
 7. Error Handling: Using Result class is created. Result class have two subtypes: Success and Failure, which will return the either of the instance
    depending upon the Success or Failure of the code.
+8. Dependency Injection: Package used is Get_it, for injecting Repository dependencies.
 
 ## Supported Platforms
 Android, Web, iOS

@@ -9,10 +9,12 @@ import 'package:provider/provider.dart';
 
 import '../../../entity/AttachmentEntity.dart';
 
+///Widget for Attachments while creating task.
 class TaskAttachmentWidget extends StatefulWidget {
   int taskId = -1;
+  Function(TaskAttachmentEntity)? onAttachmentAdded;
 
-  TaskAttachmentWidget.fromId(this.taskId, {super.key});
+  TaskAttachmentWidget.fromId(this.taskId, {super.key, this.onAttachmentAdded});
 
   @override
   State<StatefulWidget> createState() {

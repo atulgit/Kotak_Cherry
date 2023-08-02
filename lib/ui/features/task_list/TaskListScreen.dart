@@ -42,9 +42,9 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(backgroundColor: Colors.blueGrey, title: const Text(AppContants.APP_HEADER, style: TextStyle(color: Colors.white))),
+        appBar: AppBar(backgroundColor: Colors.blueGrey, title: const Text(AppConstants.APP_HEADER, style: TextStyle(color: Colors.white))),
         body: Material(
-            child: Padding(padding: const EdgeInsets.all(10), child: ChangeNotifierProvider.value(value: _taskListViewModel!, child: getTaskList())
+            child: Padding(padding: const EdgeInsets.all(10), child: ChangeNotifierProvider.value(value: _taskListViewModel!, child: _getTaskList())
                 // ChangeNotifierProvider<TaskListViewModel>(create: (context) => _taskListViewModel!, child: getTaskList())
                 )));
   }
@@ -57,7 +57,16 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
     _tabController = TabController(length: 2, vsync: this);
 
     _taskListViewModel = TaskListViewModel();
+    _setErrorHandler();
     _initSelectors();
+  }
+
+  void _setErrorHandler() {
+    _taskListViewModel?.errorListener.addListener(() {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Sending Message"),
+      ));
+    });
   }
 
   void _initSelectors() {
@@ -86,20 +95,20 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
     _taskListViewModel?.fetchTaskList();
   }
 
-  Widget getTaskList() {
+  Widget _getTaskList() {
     return Consumer<TaskListViewModel>(builder: (BuildContext context, TaskListViewModel viewModel, Widget? child) {
       return Column(children: [
-        Padding(padding: const EdgeInsets.only(top: 10), child: getHeaderOptions()),
+        Padding(padding: const EdgeInsets.only(top: 0), child: _getHeaderOptions()),
         const SizedBox(height: 10),
         if (viewModel.taskList.isEmpty)
-          Padding(padding: const EdgeInsets.only(top: 50), child: getEmptyListPlaceholder())
+          Padding(padding: const EdgeInsets.only(top: 50), child: _getEmptyListPlaceholder())
         else
-          getTabBarContent(viewModel)
+          _getTabBarContent(viewModel)
       ]);
     });
   }
 
-  Widget getTabBarHeader() {
+  Widget _getTabBarHeader() {
     return TabBar(
       controller: _tabController,
       tabs: const [
@@ -115,16 +124,21 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
     );
   }
 
-  Widget getTabBarContent(TaskListViewModel viewModel) {
+  Widget _getTabBarContent(TaskListViewModel viewModel) {
     return SizedBox(
-        height: 450,
+        height: MediaQuery.of(context).size.height - 330,
         child: TabBarView(
           controller: _tabController,
-          children: [getAllTaskList(viewModel), getCompletedTaskList(viewModel)],
+          children: [
+            _getAllTaskList(viewModel),
+            (_taskListViewModel.completedTaskList.isEmpty) ? _getEmptyListPlaceholder() : _getCompletedTaskList(viewModel)
+          ],
         ));
+
+    // _getCompletedTaskList(viewModel)
   }
 
-  Widget getAllTaskList(TaskListViewModel viewModel) {
+  Widget _getAllTaskList(TaskListViewModel viewModel) {
     return SingleChildScrollView(
         child: ListView.builder(
             shrinkWrap: true,
@@ -135,7 +149,7 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
                   value: viewModel.taskList[index],
                   key: UniqueKey(),
                   child: Consumer<TaskEntity>(builder: (BuildContext context, TaskEntity taskEntity, Widget? child) {
-                    return getTaskItemUI(taskEntity);
+                    return _getTaskItemUI(taskEntity);
                   }));
             }));
   }
@@ -146,7 +160,7 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
     super.dispose();
   }
 
-  Widget getCompletedTaskList(TaskListViewModel viewModel) {
+  Widget _getCompletedTaskList(TaskListViewModel viewModel) {
     return SingleChildScrollView(
         child: ListView.builder(
             shrinkWrap: true,
@@ -157,12 +171,12 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
                   value: viewModel.completedTaskList[index],
                   key: UniqueKey(),
                   child: Consumer<TaskEntity>(builder: (BuildContext context, TaskEntity taskEntity, Widget? child) {
-                    return getTaskItemUI(taskEntity);
+                    return _getTaskItemUI(taskEntity);
                   }));
             }));
   }
 
-  Widget getTaskItemUI(TaskEntity taskEntity) {
+  Widget _getTaskItemUI(TaskEntity taskEntity) {
     return Padding(
         padding: const EdgeInsets.only(top: 5, bottom: 5),
         child: Card(
@@ -170,7 +184,16 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
               padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(taskEntity.title,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 16, decoration: (taskEntity.isCompleted == 1) ? TextDecoration.lineThrough : TextDecoration.none)),
+                const SizedBox(height: 0),
+                if (taskEntity.description.trim().isNotEmpty)
+                  Text(taskEntity.description,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                          decoration: (taskEntity.isCompleted == 1) ? TextDecoration.lineThrough : TextDecoration.none)),
                 // Stack(children: [
                 //   Expanded(child: SizedBox(child: Text(taskEntity.title, style: const TextStyle(fontSize: 16)))),
                 //   Positioned(
@@ -207,7 +230,7 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
                             text: TextSpan(children: [
                           const TextSpan(text: "Due By: ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.black)),
                           TextSpan(
-                              text: KCUtility.getFormattedDate(taskEntity.dueDate),
+                              text: KCUtility.getFormattedDateFromString(taskEntity.dueDate),
                               style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 11, color: Colors.red))
                         ]))
                       ]))
@@ -232,14 +255,14 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
                               taskEntity.isCompleted = 1;
                               _taskListViewModel?.markCompletedTask(taskEntity);
                             },
-                            style: ElevatedButton.styleFrom(elevation: 0.0, backgroundColor: Colors.blueGrey, minimumSize: const Size(160, 30)),
+                            style: ElevatedButton.styleFrom(elevation: 0.0, backgroundColor: Colors.black54, minimumSize: const Size(160, 30)),
                             child: const Text("Mark as Completed", style: TextStyle(color: Colors.white))))
                   ])
               ])),
         ));
   }
 
-  Widget getHeaderOptions() {
+  Widget _getHeaderOptions() {
     Color _getTextColor(Set<MaterialState> states) => states.any(<MaterialState>{
           MaterialState.pressed,
           MaterialState.hovered,
@@ -249,7 +272,7 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
             : Colors.blueGrey;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      getTabBarHeader(),
+      _getTabBarHeader(),
       const SizedBox(height: 15),
       Row(mainAxisSize: MainAxisSize.max, children: [
         Expanded(
@@ -305,13 +328,8 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
                                       const SizedBox(width: 10),
                                       ElevatedButton(
                                           onPressed: () {
-                                            //Navigator.pop(context);
-                                            _prioritySelector.setSelectedValue(-1);
-                                            _labelSelector.setSelectedValue(-1);
-                                            _filterSelector.setSelectedValue(-1);
-                                            _dateSelectorController.text = "";
-                                            _taskListViewModel?.resetFilters();
-                                            _taskListViewModel!.filterAndSortTasks();
+                                            Navigator.pop(context);
+                                            _clearAllFilters();
                                           },
                                           style: CommonStyles.buttonStyle,
                                           child: const Text("Clear", style: TextStyle(color: Colors.white)))
@@ -329,7 +347,7 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
         const SizedBox(width: 20),
         ElevatedButton.icon(
             onPressed: () {
-              gotoNewTask();
+              _gotoNewTask();
             },
             icon: const Icon(Icons.add, color: Colors.white),
             style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith(_getTextColor)),
@@ -379,23 +397,32 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
     ]);
   }
 
-  void gotoNewTask() {
+  void _clearAllFilters() {
+    _prioritySelector.setSelectedValue(-1);
+    _labelSelector.setSelectedValue(-1);
+    _filterSelector.setSelectedValue(-1);
+    _dateSelectorController.text = "";
+    _taskListViewModel?.resetFilters();
+    _taskListViewModel!.filterAndSortTasks();
+  }
+
+  void _gotoNewTask() {
     Navigator.pushNamed(context, "/createtask").then((value) {
       _taskListViewModel?.fetchTaskList();
     });
   }
 
-  Widget getEmptyListPlaceholder() {
+  Widget _getEmptyListPlaceholder() {
     return Center(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      const Text(AppContants.EMPTY_LIST_PLACEHOLDER),
+      Text((_taskListViewModel.taskList.isEmpty) ? AppConstants.EMPTY_LIST_PLACEHOLDER : AppConstants.EMPTY_COMPLETED_LIST_PLACEHOLDER),
       const SizedBox(height: 10),
       SizedBox(
           width: 100,
           height: 100,
           child: InkWell(
               onTap: () {
-                gotoNewTask();
+                _gotoNewTask();
               },
               child: Container(
                   decoration: BoxDecoration(
@@ -410,6 +437,5 @@ class TaskListState extends State<TaskListScreen> with TickerProviderStateMixin,
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => false;
 }

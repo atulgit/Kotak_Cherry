@@ -17,7 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseService.init();
   NotificationManager.initLocalNotifications();
-  DependencyInitializer.init();
+  DependencyInitializer.initDependencies();
   runApp(const MyApp());
 }
 

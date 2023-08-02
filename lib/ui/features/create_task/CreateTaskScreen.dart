@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
-import 'package:kotak_cherry/common/Constants.dart';
+import 'package:kotak_cherry/common/KCConstants.dart';
 import 'package:kotak_cherry/common/KCUtility.dart';
 import 'package:kotak_cherry/common/KCExtensions.dart';
 import 'package:kotak_cherry/common/enums/TaskLabel.dart';
@@ -44,7 +44,10 @@ class CreateTaskState extends State<CreateTaskScreen> {
     super.initState();
 
     _createTaskViewModel = CreateTaskViewModel();
-    _taskAttachmentWidget = TaskAttachmentWidget.fromId(-1);
+    _setErrorHandler();
+    _taskAttachmentWidget = TaskAttachmentWidget.fromId(-1, onAttachmentAdded: (attachmentEntity) {
+      _createTaskViewModel?.addAttachment(attachmentEntity);
+    });
   }
 
   @override
@@ -53,10 +56,23 @@ class CreateTaskState extends State<CreateTaskScreen> {
     super.didChangeDependencies();
   }
 
+  void _setErrorHandler() {
+    _createTaskViewModel?.errorListener.addListener(() {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Sending Message"),
+      ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(backgroundColor: Colors.blueGrey, title: const Text(AppContants.APP_HEADER, style: TextStyle(color: Colors.white))),
+        appBar: AppBar(
+            iconTheme: const IconThemeData(
+              color: Colors.white, //change your color here
+            ),
+            backgroundColor: Colors.blueGrey,
+            title: const Text(AppConstants.APP_HEADER, style: TextStyle(color: Colors.white))),
         body: Material(child: Padding(padding: const EdgeInsets.all(10), child: _getTaskForm())));
   }
 
@@ -136,14 +152,20 @@ class CreateTaskState extends State<CreateTaskScreen> {
                           },
                         ),
                         SizedBox(height: _spacing),
-                        TextFormField(
-                          controller: _descriptionController,
-                          onSaved: (String? value) {},
-                          decoration: CommonViews.getTextEditFieldDecorator("Description", null),
-                          validator: (String? value) {
-                            return (value == null || value.isEmpty) ? 'Title cant be empty.' : null;
-                          },
-                        ),
+                        SizedBox(
+                            height: 100,
+                            child: TextFormField(
+                              textAlignVertical: TextAlignVertical.top,
+                              controller: _descriptionController,
+                              onSaved: (String? value) {},
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              expands: true,
+                              decoration: CommonViews.getTextEditFieldDecorator("Description", null),
+                              validator: (String? value) {
+                                return (value == null || value.isEmpty) ? 'Title cant be empty.' : null;
+                              },
+                            )),
                         SizedBox(height: _spacing),
                         Row(children: [_getPriorities(), SizedBox(width: 20), _getLabels()]),
                         SizedBox(height: _spacing),
@@ -170,9 +192,9 @@ class CreateTaskState extends State<CreateTaskScreen> {
                           },
                           decoration: CommonViews.getTextEditFieldDecorator("Alert Time", null),
                           onSaved: (String? value) {},
-                          validator: (String? value) {
-                            return (value == null || value.isEmpty) ? 'Date cant be empty.' : null;
-                          },
+                          // validator: (String? value) {
+                          //   return (value == null || value.isEmpty) ? 'Date cant be empty.' : null;
+                          // },
                         ),
                         const SizedBox(height: 10),
                         if (_taskAttachmentWidget != null) _taskAttachmentWidget!,
@@ -194,35 +216,58 @@ class CreateTaskState extends State<CreateTaskScreen> {
     ]);
   }
 
+  Future<bool> _scheduleNotification(DateTime date) async {
+    if (_createTaskViewModel?.notificationTime != null) {
+      var time = _createTaskViewModel?.notificationTime;
+      date = DateTime(date.year, date.month, date.day, time!.hour, time.minute);
+      await NotificationManager.scheduleNotification(_titleController.text.trim(), _descriptionController.text.trim(), date);
+      _showCustomDialog(context,
+          "${AppConstants.NOTICIFCATION_CREATED_MESSAGE} You will be notified on ${KCUtility.getFormattedDate(date)}, ${time!.hour}:${time!.minute} ${time!.period.name.toUpperCase()}");
+      return true;
+    }
+
+    return false;
+  }
+
+  void _showCustomDialog(BuildContext context, String message) {
+    showDialog<void>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext cxt) {
+        return AlertDialog(
+            content: SizedBox(
+                height: 190,
+                child: Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                          Text(message, textAlign: TextAlign.center),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Ok"))
+                        ])))));
+      },
+    );
+  }
+
   void _createTask() {
     if (!_formKey.currentState!.validate()) return;
 
     _createTaskViewModel?.title = _titleController.text;
     _createTaskViewModel?.taskId = 1020;
-    _createTaskViewModel?.description = "description";
+    _createTaskViewModel?.description = _descriptionController.text.trim();
     _createTaskViewModel?.priority = _selectedPriority;
     _createTaskViewModel?.label = _selectedLabel;
     _createTaskViewModel?.dueDate = _dueDateController.text.trim();
     _createTaskViewModel?.saveTask().then((value) async {
       DateTime date = DateTime.parse(_dueDateController.text.trim());
-
-      var time = _createTaskViewModel?.notificationTime;
-      date = DateTime(date.year, date.month, date.day, time!.hour, time.minute);
-
-      // DateTime.parse(DateFormat("h:mma").format(date));
-
-      await NotificationManager.scheduleNotification(_titleController.text.trim(), _descriptionController.text.trim(), date);
-
-      Navigator.pop(context);
-      // Navigator.pushNamed(context, "/tasklist").then((value) {
-      //
-      // });
+      var isReminderScheduled = await _scheduleNotification(date);
+      if (!isReminderScheduled) Navigator.pop(context);
     });
-  }
-}
-
-extension DateTimeExtension on DateTime {
-  DateTime applied(TimeOfDay time) {
-    return DateTime(year, month, day, time.hour, time.minute);
   }
 }

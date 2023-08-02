@@ -27,6 +27,16 @@ class TaskEntity extends BaseEntity implements Comparable<TaskEntity> {
     }
   }
 
+  int compareByTaskId(TaskEntity other) {
+    if (taskId < other.taskId) {
+      return 1;
+    } else if (taskId > other.taskId) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
   int compareByPriority(TaskEntity other) {
     if (taskPriority < other.taskPriority) {
       return -1;

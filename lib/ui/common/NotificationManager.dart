@@ -13,8 +13,7 @@ mixin NotificationManager {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: -1,
-            category: NotificationCategory.Call,
-            channelKey: AppContants.NOTFICATION_CHANNEL_KEY,
+            channelKey: AppConstants.NOTFICATION_CHANNEL_KEY,
             title: taskName,
             body: taskSummary,
             bigPicture: 'https://storage.googleapis.com/cms-storage-bucket/d406c736e7c4c57f5f61.png',
@@ -23,20 +22,19 @@ mixin NotificationManager {
             payload: {'notificationId': '1234567890'}),
         actionButtons: [
           NotificationActionButton(key: 'REDIRECT', label: 'Redirect'),
-          NotificationActionButton(key: 'DISMISS', label: 'Dismiss', buttonType: ActionButtonType.Default, isDangerousOption: true)
+          NotificationActionButton(key: 'DISMISS', label: 'Dismiss', buttonType: ActionButtonType.Default)
         ],
         schedule: NotificationCalendar.fromDate(date: scheduleDateTime));
   }
 
   static void initLocalNotifications() {
-    AwesomeNotifications().initialize(AppContants.NOTIFICATION_ICON, [
+    AwesomeNotifications().initialize(AppConstants.NOTIFICATION_ICON, [
       NotificationChannel(
         playSound: true,
         onlyAlertOnce: true,
-        channelGroupKey: 'basic_test',
-        channelKey: AppContants.NOTFICATION_CHANNEL_KEY,
-        channelName: AppContants.NOTFICATION_CHANNEL_NAME,
-        channelDescription: 'Notification channel for basic tests',
+        channelKey: AppConstants.NOTFICATION_CHANNEL_KEY,
+        channelName: AppConstants.NOTFICATION_CHANNEL_NAME,
+        channelDescription: 'Notification channel for tasks',
         channelShowBadge: true,
         groupAlertBehavior: GroupAlertBehavior.Children,
         importance: NotificationImportance.High,

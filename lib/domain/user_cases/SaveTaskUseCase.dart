@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:kotak_cherry/common/KotalResult.dart';
+import 'package:kotak_cherry/common/KCResult.dart';
 import 'package:kotak_cherry/domain/user_cases/BaseUseCase.dart';
 import 'package:kotak_cherry/entity/TaskEntity.dart';
 

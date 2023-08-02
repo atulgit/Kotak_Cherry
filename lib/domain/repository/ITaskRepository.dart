@@ -1,4 +1,4 @@
-import 'package:kotak_cherry/common/KotalResult.dart';
+import 'package:kotak_cherry/common/KCResult.dart';
 import 'package:kotak_cherry/domain/repository/BaseRepository.dart';
 import 'package:kotak_cherry/entity/AttachmentEntity.dart';
 
