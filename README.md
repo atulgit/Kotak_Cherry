@@ -17,6 +17,7 @@ This simple will helps you to create and view list of tasks. This project is cre
 3. Schedule Task Alerts and Notifications
 4. Filter task list with 'Priority', 'Label' & 'Due Date'.
 5. Sort task list with 'Priority' OR 'Due Date'
+6. File attachments with Task.
 
 ## Kotak Cherry Task Management App Architecture Components
 1. MVVM with Clean Architecture (Domain Layer)
@@ -33,26 +34,26 @@ lean and more clear. For Accessing local data, repository classes are used.
 
 Folder structure is explained below. (Only Root folders explained).
 
-Data Folder-> Implements Local and Remote data sources. (Only Local data in our case). "Data Repository" pattern is used to abstract data extraction.
+**Data Folder** -> Implements Local and Remote data sources. (Only Local data in our case). "Data Repository" pattern is used to abstract data extraction.
         It also contains Model Classes for data layer. Two folders for Data Repositories.
         Database Repository -> For implementing Remote or Local database methods. 
         Task Repository -> To consume data from Database repository. It can also consume multiple data repositories and convert to single data object 
         depending upon the requirement.
 
-Domain Folder-> It contains below use cases.
-          BaseUseCase -> Defines Repository object & invoke method.
-          FetchTaskListUseCase -> Get all tasks from local database.
-          SaveTaskUseCase -> Save task to database.
-          SetCompletedTaskUseCase -> Mark task as 'completed' and saves to database.
-          FetchCompletedTasksUseCase -> Get all completed tasks from database.
-          FetchFilteredAndSortedTasksUseCase -> Get all tasks using filters and sort options.
-          FetchFilteredCompletedTasksUseCase -> Get all completed tasks using filters and sort options.
+**Domain Folder** -> It contains below use cases.
+          <p>BaseUseCase -> Defines Repository object & invoke method.</p>
+          <p>FetchTaskListUseCase -> Get all tasks from local database.</p>
+          <p>SaveTaskUseCase -> Save task to database.</p>
+          <p>SetCompletedTaskUseCase -> Mark task as 'completed' and saves to database.</p>
+          <p>FetchCompletedTasksUseCase -> Get all completed tasks from database.</p>
+          <p>FetchFilteredAndSortedTasksUseCase -> Get all tasks using filters and sort options.</p>
+          <p>FetchFilteredCompletedTasksUseCase -> Get all completed tasks using filters and sort options.</p>
           
           This folder also contains BaseRepository & TaskRepository interface, which are imlemented in data folder.
 
-Entity Folder-> It contains entities used throughout the app. 'BaseEntity' & 'TaskEntity'.
+**Entity Folder** -> It contains entities used throughout the app. 'BaseEntity' & 'TaskEntity'.
 
-UI Folder-> It contains all common UI views and components, Feature folders (Create Task, Task List). It contains flutter widgets.
+**UI Folder**-> It contains all common UI views and components, Feature folders (Create Task, Task List). It contains flutter widgets.
 
 View Models Folder -> It contains View Models which uses 'Provider State Management' library.
 
@@ -67,18 +68,18 @@ UI Layer -> View Models -> Use Cases -> Task Repo -> Database Repo -> Database S
 5. 'ViewModels' consumes data from UseCases classes and provides data to Flutter Widgets (UI or Presentation Layer).
 
 ## Architectural Implementation
-1. 'DatabaseService' is a singleton class which will consume data from Hive database. This is simple key bases database.
+1. **'DatabaseService'** is a singleton class which will consume data from Hive database. This is simple key bases database.
    Note: For more complex scenarios and scalable app, SQlite will be used. I have avoided SQLite for now for simplistic implementation.
-2. Repository pattern is used for Data. It defines abstract interface, defining all methods which are required for task features. In our cases,
+2. **Repository Pattern** is used for Data. It defines abstract interface, defining all methods which are required for task features. In our cases,
    there is only one implementation for Repository Imp i.e DatabaseRepoImp. (As no API service is used). If there are multiple data sources to be
    consume, multiple implementations will created.
-3. TaskRepo interface is used handle multiple implementations. (Makes more sense in complex business apps).
-4. Uses Cases: This will handle the app's business logic, e.g Filtering, Sorting etc. Then same Use Cases can be consumes in multiple View Models
+3. **TaskRepo** interface is used handle multiple implementations. (Makes more sense in complex business apps).
+4. **Uses Cases**: This will handle the app's business logic, e.g Filtering, Sorting etc. Then same Use Cases can be consumes in multiple View Models
    , keeping View Models clean, maintainable. It also help reusing same business logic code in multiple VMs.
 5. Using View Models & Domain Use Cases, helps to implement cleaner Unit Test Cases.
-6. Notifications: Only local notifications are implemented. No FCM is used. Flutter Library: 'awesome_notifications'. Toast notification is not 
+6. **Notifications:** Only local notifications are implemented. No FCM is used. Flutter Library: 'awesome_notifications'. Toast notification is not 
    supported by this library. You will be able to see scheduled notification in 'Notification Center' of the android phone.
-7. Error Handling: Using Result class is created. Result class have two subtypes: Success and Failure, which will return the either of the instance
+7. **Error Handling:** Using Result class is created. Result class have two subtypes: Success and Failure, which will return the either of the instance
    depending upon the Success or Failure of the code.
 8. Dependency Injection: Package used is Get_it, for injecting Repository dependencies.
 
@@ -91,11 +92,6 @@ Note: I have tested this app and UI only on Android OS.
 2. No relation database is used to keep the development effort to minimal.
 3. App is not tested in iOS and Web.
 
-Here is how the data will flow from data layer to presentation layer.
-
-
-
-
 ## Pointers
 1. Dependency injection
 2. Reason for not using SQLite
@@ -104,13 +100,3 @@ Here is how the data will flow from data layer to presentation layer.
 5. Error Handing
 6. Why use cases used.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
