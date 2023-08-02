@@ -46,6 +46,8 @@ dependencies:
   hive_generator: ^2.0.0
   awesome_notifications: ^0.6.19
   path_provider: ^2.0.15
+  get_it: ^7.6.0
+  file_picker: ^5.3.3
 
 #dependency_overrides:
 #  dartx: ^0.3.0
