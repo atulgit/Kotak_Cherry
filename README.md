@@ -73,7 +73,7 @@ Folder structure is explained below. (Only Root folders explained).
    Note: For more complex scenarios and scalable app, SQlite will be used. I have avoided SQLite for now for simplistic implementation.
 2. **Repository Pattern** is used for Data. It defines abstract interface, defining all methods which are required for task features. In our cases,
    there is only one implementation for Repository Imp i.e DatabaseRepoImp. (As no API service is used). If there are multiple data sources to be
-   consume, multiple implementations will created.
+   consume, multiple implementations will created. We can also create Mock Implementation for repo and replace it with actual implementation for testing purpose.
 3. **TaskRepo** interface is used to handle multiple implementations. (Makes more sense in complex business apps).
 4. **Uses Cases**: This will handle the app's business logic, e.g Filtering, Sorting etc. Then same Use Cases can be consumes in multiple View Models
    , keeping View Models clean, maintainable. It also help reusing same business logic code in multiple VMs.
@@ -90,7 +90,7 @@ Note: I have tested this app and UI only on Android OS.
 
 ## Known Bugs and Limitations
 1. Scheduled notification for Tasks will not show Toast. Notification will be shown only on notification center of the OS.
-2. No relation database is used to keep the development effort to minimal.
+2. No relational database is used to keep the development effort to minimal.
 3. App is not tested in iOS and Web.
 
 ## Pointers
