@@ -1,4 +1,5 @@
-class Constants {
+mixin KCConstants {
 
+  static String currentInn = "";
 }
 

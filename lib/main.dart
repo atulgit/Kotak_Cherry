@@ -1,5 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kotak_cherry/data/RepoImp/TaskRepoImp.dart';
 import 'package:kotak_cherry/data/data_sources/local/services/DatabaseService.dart';
@@ -27,6 +28,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+
     return MaterialApp(
       initialRoute: "/",
       onGenerateRoute: RouteGenerator.generateRoute,

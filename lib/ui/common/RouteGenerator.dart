@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kotak_cherry/ui/features/create_task/CreateTaskScreen.dart';
+import 'package:kotak_cherry/ui/features/play_screen/CreateMatchScreen.dart';
+import 'package:kotak_cherry/ui/features/play_screen/HomeScreen.dart';
+import 'package:kotak_cherry/ui/features/play_screen/PlayMatchScreen.dart';
+import 'package:kotak_cherry/ui/features/play_screen/PlayScreen.dart';
 import 'package:kotak_cherry/ui/features/task_list/TaskListScreen.dart';
 
 mixin RouteGenerator {
@@ -9,7 +13,14 @@ mixin RouteGenerator {
     switch (Uri.parse(settings.name!).path) {
       case '/':
         // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
-        return MaterialPageRoute<TaskListScreen>(builder: (_) => TaskListScreen());
+        return MaterialPageRoute<HomeScreen>(builder: (_) => const HomeScreen());
+
+      case '/create':
+      // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
+        return MaterialPageRoute<CreateMatchScreen>(builder: (_) => const CreateMatchScreen());
+
+      case '/playscreen':
+        return MaterialPageRoute<PlayMatchScreen>(builder: (_) => const PlayMatchScreen());
 
       case '/tasklist':
         return MaterialPageRoute<TaskListScreen>(builder: (_) => TaskListScreen());
