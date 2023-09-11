@@ -41,7 +41,19 @@ class ScoreboardModel extends HiveObject {
   @HiveField(17)
   int isFreeHit = 0;
   @HiveField(18)
-  String wicketType = "";
+  String wicketInfo = "";
+  @HiveField(19)
+  int isDRS = 0;
+  @HiveField(20)
+  int BATDRSTaken = 0;
+  @HiveField(21)
+  int BOWLDRSTaken = 0;
+  @HiveField(22)
+  int totalBATDRS = 3;
+  @HiveField(23)
+  int totalBOWLDRS = 3;
+  @HiveField(24)
+  int DRSTeam = -1; //0 -> BAT Team, 1-> BOWL Team
 
   ScoreboardModel(this.totalOvers, this.totalPlayers, this.teamID, this.teamName);
 }

@@ -36,13 +36,19 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
       ..currentBallScore = fields[15] as int
       ..isPlaying = fields[16] as int
       ..isFreeHit = fields[17] as int
-      ..wicketType = fields[18] as String;
+      ..wicketInfo = fields[18] as String
+      ..isDRS = fields[19] as int
+      ..BATDRSTaken = fields[20] as int
+      ..BOWLDRSTaken = fields[21] as int
+      ..totalBATDRS = fields[22] as int
+      ..totalBOWLDRS = fields[23] as int
+      ..DRSTeam = fields[24] as int;
   }
 
   @override
   void write(BinaryWriter writer, ScoreboardModel obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(25)
       ..writeByte(0)
       ..write(obj.totalScore)
       ..writeByte(1)
@@ -80,7 +86,19 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
       ..writeByte(17)
       ..write(obj.isFreeHit)
       ..writeByte(18)
-      ..write(obj.wicketType);
+      ..write(obj.wicketInfo)
+      ..writeByte(19)
+      ..write(obj.isDRS)
+      ..writeByte(20)
+      ..write(obj.BATDRSTaken)
+      ..writeByte(21)
+      ..write(obj.BOWLDRSTaken)
+      ..writeByte(22)
+      ..write(obj.totalBATDRS)
+      ..writeByte(23)
+      ..write(obj.totalBOWLDRS)
+      ..writeByte(24)
+      ..write(obj.DRSTeam);
   }
 
   @override

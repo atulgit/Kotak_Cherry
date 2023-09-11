@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:kotak_cherry/ui/features/create_task/CreateTaskScreen.dart';
 import 'package:kotak_cherry/ui/features/play_screen/CreateMatchScreen.dart';
 import 'package:kotak_cherry/ui/features/play_screen/HomeScreen.dart';
+import 'package:kotak_cherry/ui/features/play_screen/MatchWinnerScreen.dart';
 import 'package:kotak_cherry/ui/features/play_screen/PlayMatchScreen.dart';
 import 'package:kotak_cherry/ui/features/play_screen/PlayScreen.dart';
+import 'package:kotak_cherry/ui/features/play_screen/ScoreboadScreen.dart';
 import 'package:kotak_cherry/ui/features/task_list/TaskListScreen.dart';
 
 mixin RouteGenerator {
@@ -12,18 +14,23 @@ mixin RouteGenerator {
     print("generateRoute");
     switch (Uri.parse(settings.name!).path) {
       case '/':
-        // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
-        return MaterialPageRoute<HomeScreen>(builder: (_) => const HomeScreen());
+        // return MaterialPageRoute<ScoreboardScreen>(builder: (_) => ScoreboardScreen("teamA"));
+      // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
+      return MaterialPageRoute<HomeScreen>(builder: (_) => const HomeScreen());
+      // return MaterialPageRoute<MatchWinnerScreen>(builder: (_) => const MatchWinnerScreen());
 
       case '/create':
-      // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
+        // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
         return MaterialPageRoute<CreateMatchScreen>(builder: (_) => const CreateMatchScreen());
 
       case '/playscreen':
         return MaterialPageRoute<PlayMatchScreen>(builder: (_) => const PlayMatchScreen());
 
-      case '/tasklist':
-        return MaterialPageRoute<TaskListScreen>(builder: (_) => TaskListScreen());
+      case '/winnerscreen':
+        return MaterialPageRoute<MatchWinnerScreen>(builder: (_) => const MatchWinnerScreen());
+
+      case '/scoreboard':
+        return MaterialPageRoute<ScoreboardScreen>(builder: (_) => ScoreboardScreen(getArgumentValue('teamId', settings)));
 
         return MaterialPageRoute<TaskListScreen>(
             settings: RouteSettings(name: "/tasklist?refresh=${getArgumentValue('refresh', settings)}"),

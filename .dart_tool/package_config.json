@@ -20,10 +20,64 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "assets_audio_player",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/assets_audio_player-3.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "assets_audio_player_web",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/assets_audio_player_web-3.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "async",
       "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/async-2.11.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
+    },
+    {
+      "name": "audioplayers",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/audioplayers-5.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "audioplayers_android",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/audioplayers_android-4.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "audioplayers_darwin",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/audioplayers_darwin-5.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "audioplayers_linux",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/audioplayers_linux-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "audioplayers_platform_interface",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/audioplayers_platform_interface-6.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "audioplayers_web",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/audioplayers_web-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "audioplayers_windows",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/audioplayers_windows-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "awesome_notifications",
@@ -242,6 +296,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "http",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/http-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "http_multi_server",
       "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/http_multi_server-3.2.1",
       "packageUri": "lib/",
@@ -402,6 +462,12 @@
       "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/pubspec_parse-1.2.3",
       "packageUri": "lib/",
       "languageVersion": "2.18"
+    },
+    {
+      "name": "rxdart",
+      "rootUri": "file:///Users/atulkumar/.pub-cache/hosted/pub.dev/rxdart-0.27.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "shared_preferences",
@@ -602,7 +668,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2023-09-03T16:38:12.241717Z",
+  "generated": "2023-09-09T09:32:59.665936Z",
   "generator": "pub",
   "generatorVersion": "3.1.0-262.2.beta"
 }

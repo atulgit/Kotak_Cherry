@@ -25,6 +25,8 @@ class CreateMatchState extends State<CreateMatchScreen> {
     // TODO: implement initState
     super.initState();
 
+    _teamBName.text = "IND";
+    _teamAName.text = "AUS";
     //continueMatch();
   }
 
@@ -71,9 +73,9 @@ class CreateMatchState extends State<CreateMatchScreen> {
                   await DatabaseService.databaseService.deleteScorecard("teamB");
 
                   ScoreboardModel? teamAScorecard =
-                      await DatabaseService.databaseService.createScorecard("teamA", _teamAName.text, int.parse("5"));
+                      await DatabaseService.databaseService.createScorecard("teamA", _teamAName.text, int.parse(_selectedOver));
                   ScoreboardModel? teamBScorecard =
-                      await DatabaseService.databaseService.createScorecard("teamB", _teamBName.text, int.parse("5"));
+                      await DatabaseService.databaseService.createScorecard("teamB", _teamBName.text, int.parse(_selectedOver));
 
                   Navigator.pushNamed(context, "/playscreen");
                 },

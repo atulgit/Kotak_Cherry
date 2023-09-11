@@ -21,10 +21,13 @@ mixin Shots {
 }
 
 class Shot {
+  int count = 0;
   String value = "";
   SHOT_TYPE shot_type = SHOT_TYPE.none;
 
   Shot(this.value, this.shot_type);
+
+  Shot.withCount(this.value, this.count, this.shot_type);
 }
 
 enum SHOT_TYPE {

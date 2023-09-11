@@ -80,6 +80,24 @@ class PlayMatchState extends State<PlayMatchScreen> with TickerProviderStateMixi
       return Scaffold(
           body: Material(
               child: Column(children: [
+        // SizedBox(
+        //     height: 100,
+        //     child: Padding(
+        //         padding: const EdgeInsets.all(10),
+        //         child: Expanded(
+        //             child: Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [
+        //           Text("TOTAL OVERS: ${scoreboardModelTeamA!.totalOvers}"),
+        //           const SizedBox(width: 50),
+        //           Text("TOTAL PLAYERS: ${scoreboardModelTeamA!.totalPlayers}"),
+        //           Expanded(
+        //               child: Align(
+        //                   alignment: Alignment.centerRight,
+        //                   child: ElevatedButton(
+        //                       onPressed: () {
+        //                         Navigator.pushNamed(context, "/create");
+        //                       },
+        //                       child: Text("New Match", style: TextStyle(fontSize: 14)))))
+        //         ])))),
         Container(
             decoration: const BoxDecoration(color: Colors.white),
             child: TabBar(
