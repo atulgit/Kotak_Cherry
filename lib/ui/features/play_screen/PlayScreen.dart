@@ -18,11 +18,13 @@ import 'package:kotak_cherry/ui/shots/OBShotCards.dart';
 import 'package:kotak_cherry/ui/shots/OBShots.dart';
 import 'package:kotak_cherry/ui/shots/PBShorts.dart';
 import 'package:kotak_cherry/ui/shots/PBShotCards.dart';
+import 'package:kotak_cherry/ui/shots/SHOT_CARDS_PB.dart';
 import 'package:kotak_cherry/ui/shots/ShotCard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/LifeCycleEventHandler.dart';
 import '../../shots/GroupShots.dart';
+import '../../shots/SHOT_CARDS_OB.dart';
 
 class PlayScreen extends StatefulWidget {
   String teamID = "";
@@ -280,7 +282,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
     //   shotCardObj = PBShotCards.SHOT_CARDS[number - 1];
     // }
 
-    var shotNumber = random(1, 36); //Generate probability number.
+    var shotNumber = random(1, 180); //Generate probability number.
 
     int shotCount = 0; //Probability count for all shots
     //Count probability for all shots one by one until rnd probability no > probability addition for shots.
@@ -506,7 +508,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
     return Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 10),
         child: SizedBox(
-            width: 7 * 100,
+            width: 3.8 * 180,
             child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [
               //Card Title and Card Name
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -546,14 +548,14 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [for (int i = 0; i < shotGrp["L1"]!.count; i++) _getShotItem(shotGrp["L1"]!, i)]);
+        children: [for (int i = 0; i < shotGrp["SHOT"]!.count; i++) _getShotItem(shotGrp["SHOT"]!, i)]);
   }
 
   Widget _getDeliveryOptions() {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          for (var group in OBShotCards.SHOT_CARD_GROUPS["L1"]!)
+          for (var group in SHOT_CARDS_OB.SHOT_CARD_GROUPS["L1"]!)
             InkWell(
                 onTap: () {
                   setState(() {
@@ -591,7 +593,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
     return Container(
         color: _getShotItemBGColor(shot),
         child: const SizedBox(
-            width: 7,
+            width: 3.8,
             height: 20,
             child: Align(
                 alignment: Alignment.center,
@@ -942,7 +944,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                               height: 100,
                               child: Padding(padding: EdgeInsets.all(5), child: Align(alignment: Alignment.center, child: Text("OB"))))),
                       onTap: () async {
-                        _selectedShotGroup = OBShotCards.SHOT_CARD_GROUPS["L1"]![0]; //set default shot group when bowler is selected.
+                        _selectedShotGroup = SHOT_CARDS_OB.SHOT_CARD_GROUPS["L1"]![0]; //set default shot group when bowler is selected.
                         _setCurrentBowlerType(0, widget.teamID);
                       }))),
           Opacity(
@@ -956,7 +958,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                               height: 100,
                               child: Padding(padding: EdgeInsets.all(5), child: Align(alignment: Alignment.center, child: Text("PB"))))),
                       onTap: () async {
-                        _selectedShotGroup = PBShotCards.SHOT_CARD_GROUPS["L1"]![0]; //set default shot group when bowler is selected.
+                        _selectedShotGroup = SHOT_CARDS_PB.SHOT_CARD_GROUPS["L1"]![0]; //set default shot group when bowler is selected.
                         _setCurrentBowlerType(1, widget.teamID);
                       }))),
         ]));
