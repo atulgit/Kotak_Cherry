@@ -24,7 +24,7 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
     )
       ..totalScore = fields[0] as int
       ..currentOverBall = fields[2] as int
-      ..currentBatsman = fields[3] as int
+      ..currentBatsmanId = fields[3] as int
       ..currentBatsmanRuns = fields[4] as int
       ..OBOvers = fields[5] as int
       ..PBOvers = fields[6] as int
@@ -34,7 +34,7 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
       ..currentOverString = fields[13] as String
       ..currentBallShotType = fields[14] as int
       ..currentBallScore = fields[15] as int
-      ..isPlaying = fields[16] as int
+      ..isBatting = fields[16] as int
       ..isFreeHit = fields[17] as int
       ..wicketInfo = fields[18] as String
       ..isDRS = fields[19] as int
@@ -42,13 +42,14 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
       ..BOWLDRSTaken = fields[21] as int
       ..totalBATDRS = fields[22] as int
       ..totalBOWLDRS = fields[23] as int
-      ..DRSTeam = fields[24] as int;
+      ..DRSTeam = fields[24] as int
+      ..currentBowlerId = fields[25] as int;
   }
 
   @override
   void write(BinaryWriter writer, ScoreboardModel obj) {
     writer
-      ..writeByte(25)
+      ..writeByte(26)
       ..writeByte(0)
       ..write(obj.totalScore)
       ..writeByte(1)
@@ -56,7 +57,7 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
       ..writeByte(2)
       ..write(obj.currentOverBall)
       ..writeByte(3)
-      ..write(obj.currentBatsman)
+      ..write(obj.currentBatsmanId)
       ..writeByte(4)
       ..write(obj.currentBatsmanRuns)
       ..writeByte(5)
@@ -82,7 +83,7 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
       ..writeByte(15)
       ..write(obj.currentBallScore)
       ..writeByte(16)
-      ..write(obj.isPlaying)
+      ..write(obj.isBatting)
       ..writeByte(17)
       ..write(obj.isFreeHit)
       ..writeByte(18)
@@ -98,7 +99,9 @@ class ScoreboardModelAdapter extends TypeAdapter<ScoreboardModel> {
       ..writeByte(23)
       ..write(obj.totalBOWLDRS)
       ..writeByte(24)
-      ..write(obj.DRSTeam);
+      ..write(obj.DRSTeam)
+      ..writeByte(25)
+      ..write(obj.currentBowlerId);
   }
 
   @override

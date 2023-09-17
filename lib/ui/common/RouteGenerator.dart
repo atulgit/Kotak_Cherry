@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kotak_cherry/data/models/PlayerModel.dart';
 import 'package:kotak_cherry/ui/features/create_task/CreateTaskScreen.dart';
 import 'package:kotak_cherry/ui/features/play_screen/CreateMatchScreen.dart';
 import 'package:kotak_cherry/ui/features/play_screen/HomeScreen.dart';
@@ -15,8 +16,8 @@ mixin RouteGenerator {
     switch (Uri.parse(settings.name!).path) {
       case '/':
         // return MaterialPageRoute<ScoreboardScreen>(builder: (_) => ScoreboardScreen("teamA"));
-      // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
-      return MaterialPageRoute<HomeScreen>(builder: (_) => const HomeScreen());
+        // return MaterialPageRoute<CreateTaskScreen>(builder: (_) => CreateTaskScreen());
+        return MaterialPageRoute<HomeScreen>(builder: (_) => const HomeScreen());
       // return MaterialPageRoute<MatchWinnerScreen>(builder: (_) => const MatchWinnerScreen());
 
       case '/create':
@@ -30,7 +31,8 @@ mixin RouteGenerator {
         return MaterialPageRoute<MatchWinnerScreen>(builder: (_) => const MatchWinnerScreen());
 
       case '/scoreboard':
-        return MaterialPageRoute<ScoreboardScreen>(builder: (_) => ScoreboardScreen(getArgumentValue('teamId', settings)));
+        return MaterialPageRoute<PlayerModel>(
+            builder: (_) => ScoreboardScreen(getArgumentValue('teamId', settings), int.parse(getArgumentValue('type', settings))));
 
         return MaterialPageRoute<TaskListScreen>(
             settings: RouteSettings(name: "/tasklist?refresh=${getArgumentValue('refresh', settings)}"),

@@ -33,9 +33,13 @@ class DatabaseService {
 
   static Future<Box<ScoreboardModel>> get _database_tasks => Hive.openBox<ScoreboardModel>(DBContants.TBL_Task);
 
-  static Future<Box<PlayerModel>> get _database_players_Team_A => Hive.openBox<PlayerModel>("players_team_A");
+  static Future<Box<PlayerModel>> get _database_batsman_Team_A => Hive.openBox<PlayerModel>("players_team_batsman_A");
 
-  static Future<Box<PlayerModel>> get _database_players_Team_B => Hive.openBox<PlayerModel>("players_team_B");
+  static Future<Box<PlayerModel>> get _database_batsman_Team_B => Hive.openBox<PlayerModel>("players_team_batsman_B");
+
+  static Future<Box<PlayerModel>> get _database_bowler_Team_A => Hive.openBox<PlayerModel>("players_team_bowler_A");
+
+  static Future<Box<PlayerModel>> get _database_bowler_Team_B => Hive.openBox<PlayerModel>("players_team_bowler_B");
 
   static Future<Box<TaskAttachmentDbModel>> get _database_attachments => Hive.openBox<TaskAttachmentDbModel>(DBContants.TBL_Attachments);
 
@@ -130,30 +134,83 @@ class DatabaseService {
       final database = await _database_tasks;
       await database.delete(teamID);
 
-      //Clear players data for TeamA and TeamB.
-      await (await _database_players_Team_A).clear();
-      await (await _database_players_Team_B).clear();
+      //Clear Batsman, Bowler Tables data for TeamA and TeamB.
+      await (await _database_batsman_Team_A).clear();
+      await (await _database_batsman_Team_B).clear();
+      await (await _database_bowler_Team_A).clear();
+      await (await _database_bowler_Team_B).clear();
     } catch (e) {
       String data = "";
     }
   }
 
-  //Create player inning for teamId, which is playing the inning. Player Id is just the player number.
-  //Player level will be L1 for now.
-  Future<void> startBatsmanInning(String teamId, int playerId, String level) async {
+  //Start batsman inning for teamId, which is playing the inning. Player Id is just the player number.
+  Future<void> startBatsmanInning(String teamId, int playerId) async {
     try {
       PlayerModel playerModel;
       if (teamId == "teamA") {
         //Create player inning for TeamA
-        final database = await _database_players_Team_A;
-        playerModel = PlayerModel("BAT $playerId", playerId, teamId);
-        playerModel.playingStatus = 1; //Playing
+        final database = await _database_batsman_Team_A;
+        playerModel = database.get(playerId)!;
+        playerModel.batsmanPlayingStatus = 1; //Playing
         database.put(playerId, playerModel);
       } else if (teamId == "teamB") {
         //Create player inning for TeamB
-        final database = await _database_players_Team_B;
-        playerModel = PlayerModel("BAT $playerId", playerId, teamId);
-        playerModel.playingStatus = 1; //Playing
+        final database = await _database_batsman_Team_B;
+        playerModel = database.get(playerId)!;
+        playerModel.batsmanPlayingStatus = 1; //Playing
+        database.put(playerId, playerModel);
+      }
+    } catch (e) {
+      String data = "";
+    }
+  }
+
+  //Player Id is just the player number.
+  //Player level will be L1 for now.
+  //Create Batsman
+  Future<void> createBatsman(String teamId, String playerName, int playerId, String batsmanLevel, Box<PlayerModel> database) async {
+    try {
+      PlayerModel playerModel;
+      if (teamId == "teamA") {
+        //Create player inning for TeamA
+        // final database = await _database_batsman_Team_A;
+        playerModel = PlayerModel(0, playerName, playerId, teamId);
+        playerModel.batsmanLevel = batsmanLevel;
+        // playerModel.playingStatus = 1; //Playing
+        database.put(playerId, playerModel);
+      } else if (teamId == "teamB") {
+        //Create player inning for TeamB
+        // final database = await _database_batsman_Team_B;
+        playerModel = PlayerModel(0, playerName, playerId, teamId);
+        playerModel.batsmanLevel = batsmanLevel;
+        // playerModel.playingStatus = 1; //Playing
+        database.put(playerId, playerModel);
+      }
+    } catch (e) {
+      String data = "";
+    }
+  }
+
+  //Player Id is just the player number.
+  //Player level will be L1 for now.
+  //Create Bowler
+  Future<void> createBowler(String teamId, String playerName, int playerId, String bowlerLevel, Box<PlayerModel> database) async {
+    try {
+      PlayerModel playerModel;
+      if (teamId == "teamA") {
+        //Create player inning for TeamA
+        // final database = await _database_batsman_Team_A;
+        playerModel = PlayerModel(1, playerName, playerId, teamId);
+        playerModel.bowlerLevel = bowlerLevel;
+        // playerModel.playingStatus = 1; //Playing
+        database.put(playerId, playerModel);
+      } else if (teamId == "teamB") {
+        //Create player inning for TeamB
+        // final database = await _database_batsman_Team_B;
+        playerModel = PlayerModel(1, playerName, playerId, teamId);
+        playerModel.bowlerLevel = bowlerLevel;
+        // playerModel.playingStatus = 1; //Playing
         database.put(playerId, playerModel);
       }
     } catch (e) {
@@ -167,24 +224,52 @@ class DatabaseService {
   //   }
   // }
 
-  Future<void> setBatsmanDelievery(Shot shotObj, String teamId, int playerId) async {
+  Future<void> setBatsmanAndBowlerDelievery(Shot shotObj, String teamId, int batsmanId, int bowlerId) async {
     try {
-      Box<PlayerModel> database = (teamId == "teamA") ? await _database_players_Team_A : await _database_players_Team_B;
-      PlayerModel? playerModel = database.get(playerId.toInt());
+      Box<PlayerModel> database = (teamId == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
+      PlayerModel? batsmanModel = database.get(batsmanId.toInt());
+      PlayerModel? bowlerModel = database.get(bowlerId.toInt());
+
+      int batsmanPoints = 0;
+      int bowlerPoints = 0;
+
       switch (shotObj.shot_type) {
         case SHOT_TYPE.four:
+          batsmanPoints += 4;
+          bowlerPoints -= 4;
+          batsmanModel!.totalScore += int.parse(shotObj.value);
+          break;
+
         case SHOT_TYPE.six:
+          batsmanPoints += 6;
+          bowlerPoints -= 6;
+          batsmanModel!.totalScore += int.parse(shotObj.value);
+          break;
+
         case SHOT_TYPE.singles:
-          playerModel!.totalScore += int.parse(shotObj.value);
+          batsmanPoints += int.parse(shotObj.value);
+          bowlerPoints -= int.parse(shotObj.value);
+          batsmanModel!.totalScore += int.parse(shotObj.value);
           break;
 
         case SHOT_TYPE.wb:
+          bowlerPoints -= 1;
+          batsmanModel!.totalScore += 1 + int.parse(shotObj.value);
+          break;
+
         case SHOT_TYPE.nb:
-          playerModel!.totalScore += 1 + int.parse(shotObj.value);
+          bowlerPoints -= 2;
+          batsmanModel!.totalScore += 1 + int.parse(shotObj.value);
+          break;
+
+        case SHOT_TYPE.db:
+          bowlerPoints += 1;
+          batsmanPoints -= 1;
           break;
 
         case SHOT_TYPE.wicket:
-          playerModel!.playingStatus = 2; //Out
+          bowlerPoints -= 10;
+          batsmanModel!.batsmanPlayingStatus = 2; //Mark batsman as Out.
           break;
 
         //Pending delivery, if Third Umpire, will be converted to DB or Wicket as per decision by batsman.
@@ -195,19 +280,34 @@ class DatabaseService {
           break;
       }
 
-      //If ball is not No-Ball & Wide-Ball & DRS, Update played overs and ball played by batsman.
+      batsmanModel!.points += batsmanPoints;
+      bowlerModel!.points += bowlerPoints;
+
+      //If ball is not No-Ball & Wide-Ball & DRS, Update played overs and balls played by batsman.
       if (shotObj.shot_type != SHOT_TYPE.nb && shotObj.shot_type != SHOT_TYPE.wb && shotObj.shot_type != SHOT_TYPE.tuWicket) {
-        if (playerModel!.ballsPlayed <= 4) {
+        if (batsmanModel!.ballsPlayed <= 4) {
           //Current Over, running over.
-          playerModel!.ballsPlayed += 1; //Update current over ball.
+          batsmanModel!.ballsPlayed += 1; //Update current over ball.
         } else {
           //Over complete
-          playerModel!.overPlayed += 1; //update completed over.
-          playerModel!.ballsPlayed = 0; //reset over ball to zero.
+          batsmanModel!.overPlayed += 1; //update completed over.
+          batsmanModel!.ballsPlayed = 0; //reset over ball to zero.
         }
       }
 
-      await playerModel!.save();
+      //If ball is not No-Ball & Wide-Ball & DRS, Update played overs and balls played by bowler.
+      if (shotObj.shot_type != SHOT_TYPE.nb && shotObj.shot_type != SHOT_TYPE.wb && shotObj.shot_type != SHOT_TYPE.tuWicket) {
+        if (bowlerModel!.ballsPlayed <= 4) {
+          //Current Over, running over.
+          bowlerModel!.ballsPlayed += 1; //Update current over ball.
+        } else {
+          //Over complete, update total overs played & reset balls played.
+          bowlerModel!.overPlayed += 1; //update completed over.
+          bowlerModel!.ballsPlayed = 0; //reset over ball to zero.
+        }
+      }
+
+      await batsmanModel!.save();
     } catch (e) {
       String data = "";
     }
@@ -225,6 +325,28 @@ class DatabaseService {
       ScoreboardModel scoreboardModelA = ScoreboardModel(2, players, teamID, teamName);
       final database = await _database_tasks;
       await database.put(teamID, scoreboardModelA);
+      final Box<PlayerModel> batsmanDatabase = (teamID == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
+      final Box<PlayerModel> bowlerDatabase = (teamID == "teamA") ? await _database_bowler_Team_A : await _database_bowler_Team_B;
+
+      //Create L1,L2,L3 Batsman in batsman table.
+      for (int i = 0; i <= 9; i++) {
+        if (i <= 2) {
+          await createBatsman(teamID, "BAT $i", i, "L3", batsmanDatabase);
+        } else if (i <= 6) {
+          await createBatsman(teamID, "BAT $i", i, "L2", batsmanDatabase);
+        } else {
+          await createBatsman(teamID, "BAT $i", i, "L1", batsmanDatabase);
+        }
+      }
+
+      //Create OB, PB Bowler in batsman table.
+      for (int i = 0; i <= 9; i++) {
+        if (i <= 4) {
+          await createBowler(teamID, "BOW $i", i, "OB", bowlerDatabase);
+        } else {
+          await createBowler(teamID, "BOW $i", i, "PB", bowlerDatabase);
+        }
+      }
 
       return scoreboardModelA;
     } catch (e) {
@@ -232,9 +354,18 @@ class DatabaseService {
     }
   }
 
-  Future<List<PlayerModel>?> getPlayers(String teamId) async {
+  Future<List<PlayerModel>?> getBattingScoreboard(String teamId) async {
     try {
-      Box<PlayerModel> database = (teamId == "teamA") ? await _database_players_Team_A : await _database_players_Team_B;
+      Box<PlayerModel> database = (teamId == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
+      return database.values.toList();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<List<PlayerModel>?> getBowlingScoreboard(String teamId) async {
+    try {
+      Box<PlayerModel> database = (teamId == "teamA") ? await _database_bowler_Team_A : await _database_bowler_Team_B;
       return database.values.toList();
     } catch (e) {
       return null;
@@ -250,13 +381,16 @@ class DatabaseService {
     }
   }
 
-  Future<ScoreboardModel?> initOver(int bowlerType, String teamId) async {
+  //Initialize new over. with selected bowler type and bowler Id. Reset over string.
+  //Also do this after checking if the current over ball is already set to zero.
+  Future<ScoreboardModel?> initOver(int bowlerType, int bowlerId, String teamId) async {
     try {
       final database = await _database_tasks;
       ScoreboardModel scoreboardModel = database.get(teamId)!;
 
       if (scoreboardModel.currentOverBall == 0) {
         scoreboardModel.currentBowlerType = bowlerType;
+        scoreboardModel.currentBowlerId = bowlerId;
         scoreboardModel.currentOverString = "";
       }
 
@@ -271,9 +405,9 @@ class DatabaseService {
     try {
       final database = await _database_tasks;
       ScoreboardModel scoreboardModel = database.get(teamId)!;
-      scoreboardModel.isPlaying = 1;
+      scoreboardModel.isBatting = 1;
 
-      await DatabaseService.databaseService.startBatsmanInning(teamId, 0, "L1");
+      //await DatabaseService.databaseService.startBatsmanInning(teamId, 0, "L1");
 
       await scoreboardModel.save();
       return scoreboardModel;
@@ -338,7 +472,7 @@ class DatabaseService {
 
   Future<void> setPlayerDRS(int playerId, String teamId) async {
     try {
-      Box<PlayerModel> database = (teamId == "teamA") ? await _database_players_Team_A : await _database_players_Team_B;
+      Box<PlayerModel> database = (teamId == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
       PlayerModel? playerModel = database.get(playerId.toInt());
       playerModel!.totalDRS += 1;
 
@@ -364,7 +498,7 @@ class DatabaseService {
       scoreboardModel.currentBallShotType = shot.shot_type.value;
 
       //Set batsman delivery, bowl by bowl (Scores, wicket status, DRS, over played).
-      await setBatsmanDelievery(shot, teamId, scoreboardModel.currentBatsman);
+      await setBatsmanAndBowlerDelievery(shot, teamId, scoreboardModel.currentBatsmanId, scoreboardModel.currentBowlerId);
 
       switch (shot.shot_type) {
         case SHOT_TYPE.six:
@@ -411,10 +545,11 @@ class DatabaseService {
             scoreboardModel.currentOverString += " W";
             scoreboardModel.wicketInfo = shot.value;
             scoreboardModel.currentBallScore = 0;
+            scoreboardModel.currentBatsmanId = -1; //Remove current batsman Id when batsman is out.
             if (scoreboardModel.wickets < scoreboardModel.totalPlayers) {
               //Change batsman.
-              scoreboardModel.currentBatsman += 1;
-              await startBatsmanInning(teamId, scoreboardModel.currentBatsman, "L1");
+              //scoreboardModel.currentBatsmanId += 1;
+              //await startBatsmanInning(teamId, scoreboardModel.currentBatsmanId, "L1");
             }
           } else {
             //Last ball was No-Ball
@@ -455,17 +590,14 @@ class DatabaseService {
             scoreboardModel.PBOvers += 1;
           }
 
-          scoreboardModel.currentBowlerType = -1; //Reset current bowler type.
+          scoreboardModel.currentBowlerType = -1; //Reset current bowler type, when over is completed.
         }
-
-        // // //Set batsman delivery, bowl by bowl (Scores, wicket status, DRS, over played).
-        // await setBatsmanDelievery(shot, teamId, scoreboardModel.currentBatsman);
 
         //match completed, overs completed or wickets completed.
         if (scoreboardModel.currentOver == scoreboardModel.totalOvers ||
             scoreboardModel.wickets == scoreboardModel.totalPlayers ||
-            (otherTeamScoreboard != null && otherTeamScoreboard!.isPlaying == 2 && (scoreboardModel.totalScore > otherTeamScoreboard!.totalScore))) {
-          scoreboardModel.isPlaying = 2; //Update playing status to completed.
+            (otherTeamScoreboard != null && otherTeamScoreboard!.isBatting == 2 && (scoreboardModel.totalScore > otherTeamScoreboard!.totalScore))) {
+          scoreboardModel.isBatting = 2; //Update playing status to completed.
         }
       }
 

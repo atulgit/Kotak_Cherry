@@ -17,24 +17,27 @@ class PlayerModelAdapter extends TypeAdapter<PlayerModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PlayerModel(
+      fields[12] as int,
       fields[1] as String,
       fields[0] as int,
       fields[10] as String,
     )
       ..totalScore = fields[2] as int
       ..totalDRS = fields[3] as int
-      ..playingStatus = fields[4] as int
+      ..batsmanPlayingStatus = fields[4] as int
       ..totalWicketsTaken = fields[5] as int
-      ..initialLevel = fields[6] as String
-      ..currentLevel = fields[7] as String
+      ..bowlerLevel = fields[6] as String
+      ..batsmanLevel = fields[7] as String
       ..overPlayed = fields[8] as int
-      ..ballsPlayed = fields[9] as int;
+      ..ballsPlayed = fields[9] as int
+      ..points = fields[11] as int
+      ..bowlerPlayingStatus = fields[13] as int;
   }
 
   @override
   void write(BinaryWriter writer, PlayerModel obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.playerId)
       ..writeByte(1)
@@ -44,19 +47,25 @@ class PlayerModelAdapter extends TypeAdapter<PlayerModel> {
       ..writeByte(3)
       ..write(obj.totalDRS)
       ..writeByte(4)
-      ..write(obj.playingStatus)
+      ..write(obj.batsmanPlayingStatus)
       ..writeByte(5)
       ..write(obj.totalWicketsTaken)
       ..writeByte(6)
-      ..write(obj.initialLevel)
+      ..write(obj.bowlerLevel)
       ..writeByte(7)
-      ..write(obj.currentLevel)
+      ..write(obj.batsmanLevel)
       ..writeByte(8)
       ..write(obj.overPlayed)
       ..writeByte(9)
       ..write(obj.ballsPlayed)
       ..writeByte(10)
-      ..write(obj.teamId);
+      ..write(obj.teamId)
+      ..writeByte(11)
+      ..write(obj.points)
+      ..writeByte(12)
+      ..write(obj.playerType)
+      ..writeByte(13)
+      ..write(obj.bowlerPlayingStatus);
   }
 
   @override

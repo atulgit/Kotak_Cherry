@@ -17,16 +17,16 @@ class PlayerModel extends HiveObject {
   int totalDRS = 0;
 
   @HiveField(4)
-  int playingStatus = 0;
+  int batsmanPlayingStatus = 0; //0 -> Pending, 1 -> Playing, 2 -> Out(Played)
 
   @HiveField(5)
   int totalWicketsTaken = 0;
 
   @HiveField(6)
-  String initialLevel = "";
+  String bowlerLevel = ""; //(OB), (PB)
 
   @HiveField(7)
-  String currentLevel = "";
+  String batsmanLevel = ""; //L1,L2,L3
 
   @HiveField(8)
   int overPlayed = 0;
@@ -37,5 +37,14 @@ class PlayerModel extends HiveObject {
   @HiveField(10)
   String teamId = "";
 
-  PlayerModel(this.playerName, this.playerId, this.teamId);
+  @HiveField(11)
+  int points = 0;
+
+  @HiveField(12)
+  int playerType = -1; //0 -> Batsman, 1 -> Bowler
+
+  @HiveField(13)
+  int bowlerPlayingStatus = -1; //0 -> Not Bowling, 1 -> Bowling, 2 -> Bowling completed
+
+  PlayerModel(this.playerType, this.playerName, this.playerId, this.teamId);
 }

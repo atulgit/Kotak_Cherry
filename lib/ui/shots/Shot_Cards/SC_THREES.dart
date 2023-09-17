@@ -7,7 +7,7 @@ mixin SC_THREES {
   static ShotCard SHOT_CARD_SC1_DB = ShotCard("SINGLES", "Three's", [
     HashMap.of({"SHOT": Shot.withCount("3", 10, SHOT_TYPE.singles)}), //Shot Group
     HashMap.of({"SHOT": Shot.withCount("1", 170, SHOT_TYPE.db)})
-  ]);
+  ], cardType: 0, primaryShotType: SHOT_TYPE.singles);
 
   static ShotCard SHOT_CARD_SC1_OUT = ShotCard("SINGLES", "Three's", [
     HashMap.of({"SHOT": Shot.withCount("3", 85, SHOT_TYPE.singles)}), //Shot Group

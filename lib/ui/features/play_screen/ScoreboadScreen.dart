@@ -7,8 +7,9 @@ import '../../../data/models/PlayerModel.dart';
 
 class ScoreboardScreen extends StatefulWidget {
   String teamId = "";
+  int scorecardType = -1;
 
-  ScoreboardScreen(this.teamId, {super.key});
+  ScoreboardScreen(this.teamId, this.scorecardType, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -17,7 +18,7 @@ class ScoreboardScreen extends StatefulWidget {
 }
 
 class ScoreboardState extends State<ScoreboardScreen> {
-  List<PlayerModel>? _players;
+  List<PlayerModel>? _scorecard;
   ScoreboardModel? _scoreboardModel;
 
   final TextStyle _textStyle = const TextStyle(fontWeight: FontWeight.bold);
@@ -30,11 +31,19 @@ class ScoreboardState extends State<ScoreboardScreen> {
   }
 
   void _init() async {
-    var players = await DatabaseService.databaseService.getPlayers(widget.teamId);
+    List<PlayerModel>? scorecard;
+    if (widget.scorecardType == 0) {
+      //BAT Scoreboard
+      scorecard = await DatabaseService.databaseService.getBattingScoreboard(widget.teamId);
+    } else if (widget.scorecardType == 1) {
+      //BOWL Scoreboard
+      scorecard = await DatabaseService.databaseService.getBowlingScoreboard(widget.teamId);
+    }
+
     var scoreboard = await DatabaseService.databaseService.getScorecard(widget.teamId);
 
     setState(() {
-      _players = players;
+      _scorecard = scorecard;
       _scoreboardModel = scoreboard;
     });
   }
@@ -45,7 +54,7 @@ class ScoreboardState extends State<ScoreboardScreen> {
   }
 
   Widget _getBody() {
-    if (_scoreboardModel == null || _players == null) {
+    if (_scoreboardModel == null || _scorecard == null) {
       return Container();
     }
 
@@ -63,9 +72,20 @@ class ScoreboardState extends State<ScoreboardScreen> {
                 DataColumn(label: Text("DRS")),
                 DataColumn(label: Text("Overs"))
               ], rows: [
-                for (var player in _players!)
+                for (var player in _scorecard!)
                   DataRow(cells: [
-                    DataCell(Text(player.playerName)),
+                    DataCell(InkWell(
+                        onTap: () async {
+                          if (widget.scorecardType == 0) {
+                            //Batsman Selected
+                            await DatabaseService.databaseService.startBatsmanInning(widget.teamId, player.playerId);
+                          } else if (widget.scorecardType == 1) {
+                            //Bowler Selected
+                            await DatabaseService.databaseService.startBatsmanInning(widget.teamId, player.playerId);
+                          }
+                          Navigator.pop(context, player);
+                        },
+                        child: Text(player.playerName))),
                     DataCell(Text(player.totalScore.toString())),
                     DataCell(Text(_getPlayerStatus(player))),
                     DataCell(Text(player.totalDRS.toString())),
@@ -74,7 +94,7 @@ class ScoreboardState extends State<ScoreboardScreen> {
                 DataRow(cells: [
                   DataCell(Text("Total", style: _textStyle)),
                   DataCell(Text(_scoreboardModel!.totalScore.toString(), style: _textStyle)),
-                  DataCell(Text("${_scoreboardModel!.currentBatsman}/${_scoreboardModel!.totalPlayers}", style: _textStyle)),
+                  DataCell(Text("${_scoreboardModel!.currentBatsmanId}/${_scoreboardModel!.totalPlayers}", style: _textStyle)),
                   DataCell(Text(_scoreboardModel!.BATDRSTaken.toString(), style: _textStyle)),
                   DataCell(Text("${_scoreboardModel!.currentOver}.${_scoreboardModel!.currentOverBall}/${_scoreboardModel!.totalOvers}.0",
                       style: _textStyle))
@@ -84,9 +104,9 @@ class ScoreboardState extends State<ScoreboardScreen> {
   }
 
   String _getPlayerStatus(PlayerModel playerModel) {
-    if (playerModel.playingStatus == 1) {
+    if (playerModel.batsmanPlayingStatus == 1) {
       return "playing";
-    } else if (playerModel.playingStatus == 2) {
+    } else if (playerModel.batsmanPlayingStatus == 2) {
       return "out";
     } else {
       return "";

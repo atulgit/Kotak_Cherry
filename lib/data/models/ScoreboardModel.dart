@@ -11,7 +11,7 @@ class ScoreboardModel extends HiveObject {
   @HiveField(2)
   int currentOverBall = 0;
   @HiveField(3)
-  int currentBatsman = 0;
+  int currentBatsmanId = -1;
   @HiveField(4)
   int currentBatsmanRuns = 0;
   @HiveField(5)
@@ -37,7 +37,7 @@ class ScoreboardModel extends HiveObject {
   @HiveField(15)
   int currentBallScore = 0;
   @HiveField(16)
-  int isPlaying = 0;
+  int isBatting = 0;
   @HiveField(17)
   int isFreeHit = 0;
   @HiveField(18)
@@ -54,6 +54,8 @@ class ScoreboardModel extends HiveObject {
   int totalBOWLDRS = 3;
   @HiveField(24)
   int DRSTeam = -1; //0 -> BAT Team, 1-> BOWL Team
+  @HiveField(25)
+  int currentBowlerId = -1;
 
   ScoreboardModel(this.totalOvers, this.totalPlayers, this.teamID, this.teamName);
 }
