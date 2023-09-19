@@ -5,6 +5,7 @@ import 'package:kotak_cherry/data/data_sources/local/DBConstants.dart';
 import 'package:kotak_cherry/data/models/PlayerModel.dart';
 import 'package:kotak_cherry/data/models/TaskAttachmentDbModel.dart';
 import 'package:kotak_cherry/ui/common/Shots.dart';
+import 'package:kotak_cherry/ui/common/players/TeamPlayers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -147,6 +148,11 @@ class DatabaseService {
   //Start batsman inning for teamId, which is playing the inning. Player Id is just the player number.
   Future<void> startBatsmanInning(String teamId, int playerId) async {
     try {
+      final database = await _database_tasks;
+      ScoreboardModel scoreboardModel = database.get(teamId)!;
+      scoreboardModel.currentBatsmanId = playerId;
+      await scoreboardModel.save();
+
       PlayerModel playerModel;
       if (teamId == "teamA") {
         //Create player inning for TeamA
@@ -169,54 +175,55 @@ class DatabaseService {
   //Player Id is just the player number.
   //Player level will be L1 for now.
   //Create Batsman
-  Future<void> createBatsman(String teamId, String playerName, int playerId, String batsmanLevel, Box<PlayerModel> database) async {
-    try {
-      PlayerModel playerModel;
-      if (teamId == "teamA") {
-        //Create player inning for TeamA
-        // final database = await _database_batsman_Team_A;
-        playerModel = PlayerModel(0, playerName, playerId, teamId);
-        playerModel.batsmanLevel = batsmanLevel;
-        // playerModel.playingStatus = 1; //Playing
-        database.put(playerId, playerModel);
-      } else if (teamId == "teamB") {
-        //Create player inning for TeamB
-        // final database = await _database_batsman_Team_B;
-        playerModel = PlayerModel(0, playerName, playerId, teamId);
-        playerModel.batsmanLevel = batsmanLevel;
-        // playerModel.playingStatus = 1; //Playing
-        database.put(playerId, playerModel);
-      }
-    } catch (e) {
-      String data = "";
-    }
-  }
+  // Future<void> createBatsman(
+  //     String teamId, String playerName, int playerId, String batsmanLevel, String bowlerLevel, Box<PlayerModel> database) async {
+  //   try {
+  //     PlayerModel playerModel = PlayerModel(0, playerName, playerId, teamId, batsmanLevel, bowlerLevel);
+  //     database.put(playerId, playerModel);
+  //
+  //     // if (teamId == "teamA") {
+  //     //   //Create player inning for TeamA
+  //     //   // final database = await _database_batsman_Team_A;
+  //     //   playerModel = PlayerModel(0, playerName, playerId, teamId, batsmanLevel, bowlerLevel);
+  //     //   // playerModel.playingStatus = 1; //Playing
+  //     //   database.put(playerId, playerModel);
+  //     // } else if (teamId == "teamB") {
+  //     //   //Create player inning for TeamB
+  //     //   // final database = await _database_batsman_Team_B;
+  //     //   playerModel = PlayerModel(0, playerName, playerId, teamId, batsmanLevel, bowlerLevel);
+  //     //   // playerModel.playingStatus = 1; //Playing
+  //     //   database.put(playerId, playerModel);
+  //     // }
+  //   } catch (e) {
+  //     String data = "";
+  //   }
+  // }
 
   //Player Id is just the player number.
   //Player level will be L1 for now.
   //Create Bowler
-  Future<void> createBowler(String teamId, String playerName, int playerId, String bowlerLevel, Box<PlayerModel> database) async {
-    try {
-      PlayerModel playerModel;
-      if (teamId == "teamA") {
-        //Create player inning for TeamA
-        // final database = await _database_batsman_Team_A;
-        playerModel = PlayerModel(1, playerName, playerId, teamId);
-        playerModel.bowlerLevel = bowlerLevel;
-        // playerModel.playingStatus = 1; //Playing
-        database.put(playerId, playerModel);
-      } else if (teamId == "teamB") {
-        //Create player inning for TeamB
-        // final database = await _database_batsman_Team_B;
-        playerModel = PlayerModel(1, playerName, playerId, teamId);
-        playerModel.bowlerLevel = bowlerLevel;
-        // playerModel.playingStatus = 1; //Playing
-        database.put(playerId, playerModel);
-      }
-    } catch (e) {
-      String data = "";
-    }
-  }
+  // Future<void> createBowler(String teamId, String playerName, int playerId, String bowlerLevel, Box<PlayerModel> database) async {
+  //   try {
+  //     PlayerModel playerModel;
+  //     if (teamId == "teamA") {
+  //       //Create player inning for TeamA
+  //       // final database = await _database_batsman_Team_A;
+  //       playerModel = PlayerModel(1, playerName, playerId, teamId);
+  //       playerModel.bowlerLevel = bowlerLevel;
+  //       // playerModel.playingStatus = 1; //Playing
+  //       database.put(playerId, playerModel);
+  //     } else if (teamId == "teamB") {
+  //       //Create player inning for TeamB
+  //       // final database = await _database_batsman_Team_B;
+  //       playerModel = PlayerModel(1, playerName, playerId, teamId);
+  //       playerModel.bowlerLevel = bowlerLevel;
+  //       // playerModel.playingStatus = 1; //Playing
+  //       database.put(playerId, playerModel);
+  //     }
+  //   } catch (e) {
+  //     String data = "";
+  //   }
+  // }
 
   // Future<void> setBatsmanScore(Shot shotObj, String teamId, int playerId) async {
   //   try {} catch (e) {
@@ -224,11 +231,15 @@ class DatabaseService {
   //   }
   // }
 
-  Future<void> setBatsmanAndBowlerDelievery(Shot shotObj, String teamId, int batsmanId, int bowlerId) async {
+  Future<void> setBatsmanAndBowlerDelievery(Shot shotObj, String batsmanTeamId, int batsmanId, int bowlerId) async {
     try {
-      Box<PlayerModel> database = (teamId == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
-      PlayerModel? batsmanModel = database.get(batsmanId.toInt());
-      PlayerModel? bowlerModel = database.get(bowlerId.toInt());
+      String bowlerTeamId = (batsmanTeamId == "teamA") ? "teamB" : "teamA";
+
+      Box<PlayerModel> databaseBatsman = (batsmanTeamId == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
+      Box<PlayerModel> databaseBowler = (bowlerTeamId == "teamA") ? await _database_bowler_Team_A : await _database_bowler_Team_B;
+
+      PlayerModel? batsmanModel = databaseBatsman.get(batsmanId.toInt());
+      PlayerModel? bowlerModel = databaseBowler.get(bowlerId.toInt());
 
       int batsmanPoints = 0;
       int bowlerPoints = 0;
@@ -268,7 +279,8 @@ class DatabaseService {
           break;
 
         case SHOT_TYPE.wicket:
-          bowlerPoints -= 10;
+          batsmanPoints -= 10;
+          bowlerPoints += 10;
           batsmanModel!.batsmanPlayingStatus = 2; //Mark batsman as Out.
           break;
 
@@ -308,6 +320,7 @@ class DatabaseService {
       }
 
       await batsmanModel!.save();
+      await bowlerModel!.save();
     } catch (e) {
       String data = "";
     }
@@ -322,33 +335,49 @@ class DatabaseService {
         players = 10;
       }
 
-      ScoreboardModel scoreboardModelA = ScoreboardModel(2, players, teamID, teamName);
+      ScoreboardModel scoreboardModelA = ScoreboardModel(overs, players, teamID, teamName);
       final database = await _database_tasks;
       await database.put(teamID, scoreboardModelA);
       final Box<PlayerModel> batsmanDatabase = (teamID == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
       final Box<PlayerModel> bowlerDatabase = (teamID == "teamA") ? await _database_bowler_Team_A : await _database_bowler_Team_B;
 
-      //Create L1,L2,L3 Batsman in batsman table.
+      //TeamA is considered as AUS, and TeamB is considered as IND for now.
+      var playersList = teamID == "teamA" ? TeamPlayers.TeamBPlayers : TeamPlayers.TeamAPlayers;
+
+      //Create batsman score card for selected team.
       for (int i = 0; i <= 9; i++) {
-        if (i <= 2) {
-          await createBatsman(teamID, "BAT $i", i, "L3", batsmanDatabase);
-        } else if (i <= 6) {
-          await createBatsman(teamID, "BAT $i", i, "L2", batsmanDatabase);
-        } else {
-          await createBatsman(teamID, "BAT $i", i, "L1", batsmanDatabase);
-        }
+        PlayerModel playerModel =
+            PlayerModel(0, playersList[i].playerName, playersList[i].playerId, teamID, playersList[i].batsmanLevel, playersList[i].bowlerLevel);
+        batsmanDatabase.put(playersList[i].playerId, playerModel);
       }
 
-      //Create OB, PB Bowler in batsman table.
+      //Create bowler score card for selected team.
       for (int i = 0; i <= 9; i++) {
-        if (i <= 4) {
-          await createBowler(teamID, "BOW $i", i, "OB", bowlerDatabase);
-        } else {
-          await createBowler(teamID, "BOW $i", i, "PB", bowlerDatabase);
-        }
+        PlayerModel playerModel =
+            PlayerModel(1, playersList[i].playerName, playersList[i].playerId, teamID, playersList[i].batsmanLevel, playersList[i].bowlerLevel);
+        bowlerDatabase.put(playersList[i].playerId, playerModel);
       }
 
       return scoreboardModelA;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<PlayerModel?> getBatsman(String batsmanTeamId, int playerId) async {
+    try {
+      Box<PlayerModel> database = (batsmanTeamId == "teamA") ? await _database_batsman_Team_A : await _database_batsman_Team_B;
+      return database.get(playerId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<PlayerModel?> getBowler(String batsmanTeamId, int playerId) async {
+    try {
+      String bowlderTeamId = (batsmanTeamId == "teamA") ? "teamB" : "teamA";
+      Box<PlayerModel> database = (bowlderTeamId == "teamA") ? await _database_bowler_Team_A : await _database_bowler_Team_B;
+      return database.get(playerId);
     } catch (e) {
       return null;
     }
@@ -365,6 +394,7 @@ class DatabaseService {
 
   Future<List<PlayerModel>?> getBowlingScoreboard(String teamId) async {
     try {
+     // String bowlingTeamId = (playingTeamId == "teamA") ? "teamB" : "teamA";
       Box<PlayerModel> database = (teamId == "teamA") ? await _database_bowler_Team_A : await _database_bowler_Team_B;
       return database.values.toList();
     } catch (e) {

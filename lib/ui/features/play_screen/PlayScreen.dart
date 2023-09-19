@@ -73,13 +73,6 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
   }
 
   void init() async {
-    //final Audio audio = Audio.file('assets/audios/a1.mp3');
-    // AssetsAudioPlayer.newPlayer().open(
-    //   audio,
-    //   autoStart: true,
-    //   showNotification: true,
-    // );
-
     var teamScoreboard = await DatabaseService.databaseService.getScorecard(widget.teamID);
     setState(() {
       scoreboard = teamScoreboard;
@@ -129,7 +122,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                       height: 100,
                       child: Padding(padding: const EdgeInsets.all(5), child: Align(alignment: Alignment.center, child: Text(title))))),
               onTap: () async {
-                Navigator.pushNamed(context, "/scoreboard?teamId=${scoreboard!.teamID}&type=$type").then((value) async {
+                Navigator.pushNamed(context, "/scoreboard?teamId=${scoreboard!.teamID}&selectionMode=1").then((value) async {
                   //BATSMAN SELECTED By player. Set current batsman
                   if (type == 0) {
                     setState(() {
@@ -143,9 +136,9 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
                     //Get shot groups based on selected batsman level(L1,L2,L3) and selected bowler(OB,PB).
                     //set Default shot group when bowler is selected.
-                    if (scoreboard!.currentBowlerType == 0) {
+                    if (_currentBowler!.bowlerLevel == "OB") {
                       _selectedShotGroup = SHOT_CARDS_OB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]![0];
-                    } else {
+                    } else if (_currentBowler!.bowlerLevel == "PB") {
                       _selectedShotGroup = SHOT_CARDS_PB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]![0];
                     }
 
@@ -157,15 +150,6 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                     }
                   }
                 });
-
-                // var teamScorecard = await DatabaseService.databaseService.startInning(widget.teamID);
-                // final SharedPreferences prefs = await _prefs;
-                // await prefs.setString("inn", widget.teamID);
-                //
-                // setState(() {
-                //   KCConstants.currentInn = widget.teamID;
-                //   scoreboard = teamScorecard;
-                // });
               })
         ]));
   }
@@ -351,6 +335,10 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
     ShotCard shotCardObj = ShotCard("", "", []);
     shotCardObj = _selectedShotGroup!.shotGroup[number - 1];
 
+    StrengthBuilder strengthBuilder = StrengthBuilder();
+
+    List<Map<String, Shot>> SHOT_CARD_STRENGTH = strengthBuilder.buildStrength(shotCardObj, _currentBatsman!.points, _currentBowler!.points);
+
     // if (scoreboard!.currentBowlerType == 0) {
     //   //for OB Bowler
     //   shotCardObj = _selectedShotGroup!.shotGroup[number - 1];
@@ -363,11 +351,11 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
     int shotCount = 0; //Probability count for all shots
     //Count probability for all shots one by one until rnd probability no > probability addition for shots.
-    for (int i = 0; i < shotCardObj.SHOT_CARD.length; i++) {
+    for (int i = 0; i < SHOT_CARD_STRENGTH.length; i++) {
       //Get shot card map for all levels (L1, L2, L3)
       Map<String, Shot> shotMap = shotCardObj.SHOT_CARD[i];
-      //Get Shot card for current batsman level.
-      Shot shotObj = shotMap[_currentBatsman!.batsmanLevel]!;
+      //Get Shot card.
+      Shot shotObj = shotMap["SHOT"]!;
       //Get count for this shot and add
       shotCount += shotObj.count;
 
@@ -458,10 +446,14 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
   //Play randomly generated shot. Also DRS eligible shot.(to mark into the database and then show YES/NO options.)
   Future<void> _playBall(Shot shotObj) async {
     ScoreboardModel? scoreboardModel = await DatabaseService.databaseService.saveBall(shotObj, widget.teamID);
+    PlayerModel? batsmanModel = await DatabaseService.databaseService.getBatsman(widget.teamID, _currentBatsman!.playerId);
+    PlayerModel? bowlerModel = await DatabaseService.databaseService.getBowler(widget.teamID, _currentBowler!.playerId);
     setState(() {
       //Updated scoreboard after shot is played. Even if it is DRS eligible, update the shot to database, set DRS params. Then show result based on
       //DRS decision taken by Batsman or Bowler.
       scoreboard = scoreboardModel;
+      _currentBatsman = batsmanModel;
+      _currentBowler = bowlerModel;
 
       // If this shot is Third-Umpire shot, then show DRS options (YES/NO).
       if (shotObj.shot_type == SHOT_TYPE.tuWicket) {
@@ -613,57 +605,6 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
             ])));
   }
 
-  // Map<String, Shot> _getShotObjectMapStrength(Map<String, Shot> shotGrp) {
-  //   var shotObj = shotGrp["SHOT"]!;
-  //
-  //   int batsmanPoints = 40;
-  //   int bowlerPoints = 0;
-  //
-  //   double probabilityCount = shotObj.count.toDouble();
-  //
-  //   // *********@@@@@@@@@@@@@@+++++++++++++
-  //
-  //   int diff = (batsmanPoints - bowlerPoints);
-  //   double strength = diff / 3; //Convert difference points to strength boxes. 1 strength box consists of three points.
-  //
-  //   double maxStrengthToChange = 40; //Set max strength 40 by default. Set 40 blocks of strength - or + by default.
-  //   if (shotObj.count > 20) {
-  //     //Check if count is greater than min strength that can be reduced.
-  //     maxStrengthToChange = shotObj.count - 20; //Set max strength that can be reduced.
-  //   }
-  //
-  //   //check if
-  //   //shotObj.count - 20
-  //
-  //   if (strength > maxStrengthToChange) {
-  //     //If strength is greater than max strength, consider max strength 40 only.
-  //     strength = maxStrengthToChange;
-  //   } else if (strength < -40) {
-  //     //If strength is minimum than -40, consider min strength as -40 only.
-  //     strength = -maxStrengthToChange;
-  //   }
-  //
-  //   if (strength < 0) {
-  //     //If strength is negative.
-  //     //More Bowler Points, increase DB, OUT, reduce runs
-  //     if (shotObj.shot_type == SHOT_TYPE.db || shotObj.shot_type == SHOT_TYPE.wicket) {
-  //       probabilityCount = shotObj.count + (strength.abs()); //increase DB or wickets probability.
-  //     } else if (shotObj.shot_type == SHOT_TYPE.singles || shotObj.shot_type == SHOT_TYPE.four || shotObj.shot_type == SHOT_TYPE.six) {
-  //       probabilityCount = shotObj.count - (strength.abs()); //decrease runs probability.
-  //     }
-  //   } else if (strength > 0) {
-  //     //if strength is positive.
-  //     //More Batsman Point, Increase RUNS, reduce DB, OUT
-  //     if (shotObj.shot_type == SHOT_TYPE.db || shotObj.shot_type == SHOT_TYPE.wicket) {
-  //       probabilityCount = shotObj.count - (strength.abs());
-  //     } else if (shotObj.shot_type == SHOT_TYPE.singles || shotObj.shot_type == SHOT_TYPE.four || shotObj.shot_type == SHOT_TYPE.six) {
-  //       probabilityCount = shotObj.count + (strength.abs());
-  //     }
-  //   }
-  //
-  //
-  // }
-
   Widget _getDRSCard() {
     return Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -686,55 +627,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
   Widget _getShotCardItems(Map<String, Shot> shotGrp) {
     Shot shotObj = shotGrp["SHOT"]!;
-
     print("Shot Data: Type: ${shotObj.shot_type.toString()} Count: ${shotObj.count}");
-
-    // var shotObj = shotGrp["SHOT"]!;
-    //
-    // int batsmanPoints = 40;
-    // int bowlerPoints = 0;
-    //
-    // double probabilityCount = shotObj.count.toDouble();
-    //
-    // // *********@@@@@@@@@@@@@@+++++++++++++
-    //
-    // int diff = (batsmanPoints - bowlerPoints);
-    // double strength = diff / 3; //Convert difference points to strength boxes. 1 strength box consists of three points.
-    //
-    // double maxStrengthToChange = 40; //Set max strength 40 by default. Set 40 blocks of strength - or + by default.
-    // if (shotObj.count > 20) {
-    //   //Check if count is greater than min strength that can be reduced.
-    //   maxStrengthToChange = shotObj.count - 20; //Set max strength that can be reduced.
-    // }
-    //
-    // //check if
-    // //shotObj.count - 20
-    //
-    // if (strength > maxStrengthToChange) {
-    //   //If strength is greater than max strength, consider max strength 40 only.
-    //   strength = maxStrengthToChange;
-    // } else if (strength < -40) {
-    //   //If strength is minimum than -40, consider min strength as -40 only.
-    //   strength = -maxStrengthToChange;
-    // }
-    //
-    // if (strength < 0) {
-    //   //If strength is negative.
-    //   //More Bowler Points, increase DB, OUT, reduce runs
-    //   if (shotObj.shot_type == SHOT_TYPE.db || shotObj.shot_type == SHOT_TYPE.wicket) {
-    //     probabilityCount = shotObj.count + (strength.abs()); //increase DB or wickets probability.
-    //   } else if (shotObj.shot_type == SHOT_TYPE.singles || shotObj.shot_type == SHOT_TYPE.four || shotObj.shot_type == SHOT_TYPE.six) {
-    //     probabilityCount = shotObj.count - (strength.abs()); //decrease runs probability.
-    //   }
-    // } else if (strength > 0) {
-    //   //if strength is positive.
-    //   //More Batsman Point, Increase RUNS, reduce DB, OUT
-    //   if (shotObj.shot_type == SHOT_TYPE.db || shotObj.shot_type == SHOT_TYPE.wicket) {
-    //     probabilityCount = shotObj.count - (strength.abs());
-    //   } else if (shotObj.shot_type == SHOT_TYPE.singles || shotObj.shot_type == SHOT_TYPE.four || shotObj.shot_type == SHOT_TYPE.six) {
-    //     probabilityCount = shotObj.count + (strength.abs());
-    //   }
-    // }
 
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -770,9 +663,17 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                     color: Colors.amberAccent,
                     child: Padding(padding: EdgeInsets.all(10), child: Text("Bowl It!", style: TextStyle(fontWeight: FontWeight.bold))))))
       ]),
-      // const SizedBox(height: 30),
-      if (_selectedShotGroup != null) //When shot group is selected, then display all shots for selected group.
-        for (var shot in _selectedShotGroup!.shotGroup) _getShotCardItem(shot, 0)
+      const SizedBox(height: 10),
+      SizedBox(
+          height: 160,
+          child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: const ScrollPhysics(),
+              child: Expanded(
+                  child: Column(children: [
+                if (_selectedShotGroup != null) //When shot group is selected, then display all shots for selected group.
+                  for (var shot in _selectedShotGroup!.shotGroup) _getShotCardItem(shot, 0)
+              ]))))
     ]);
   }
 
@@ -932,15 +833,9 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
   Widget _getShotSelections() {
     int counter = 1;
-    // List<List<Map<String, Shot>>> shotCards = [];
-    // if (scoreboard!.currentBowlerType == 0) {
-    //   shotCards = OBShotCards.SHOT_CARDS;
-    // } else if (scoreboard!.currentBowlerType == 1) {
-    //   shotCards = PBShotCards.SHOT_CARDS;
-    // }
 
     return SizedBox(
-        height: 250,
+        height: 200,
         child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             physics: const ScrollPhysics(),
@@ -949,14 +844,6 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
               for (var shotCard in _selectedShotGroup!.shotGroup)
                 Padding(padding: const EdgeInsets.only(top: 10, bottom: 10), child: _getShotCardItem(shotCard, counter++))
             ]))));
-  }
-
-  Widget _getShotCardOption(String item, Function onTap) {
-    return InkWell(
-        onTap: () {
-          if (onTap != null) onTap();
-        },
-        child: Card(child: SizedBox(width: 100, height: 100, child: Align(alignment: Alignment.center, child: Text(item)))));
   }
 
   Widget _getBottomStrip() {
@@ -976,7 +863,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                       type = 0;
                     else
                       type = 1;
-                    Navigator.pushNamed(context, "/scoreboard?teamId=${scoreboard!.teamID}&type=$type");
+                    Navigator.pushNamed(context, "/scoreboard?teamId=${scoreboard!.teamID}&selectionMode=0");
                   },
                   icon: const Icon(Icons.settings, size: 30))
             ])));
@@ -1134,41 +1021,6 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
   Widget _getCurrentBatsman() {
     return const Padding(padding: EdgeInsets.only(left: 30), child: Text("B1 10/1.4 | **", style: TextStyle(fontSize: 16)));
-  }
-
-  Widget _getBowlerOptions() {
-    return Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Opacity(
-              opacity: !_isBowlerOverCompleted(scoreboard!.OBOvers) ? .4 : 1,
-              child: AbsorbPointer(
-                  absorbing: !_isBowlerOverCompleted(scoreboard!.OBOvers),
-                  child: InkWell(
-                      child: const Card(
-                          child: SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: Padding(padding: EdgeInsets.all(5), child: Align(alignment: Alignment.center, child: Text("OB"))))),
-                      onTap: () async {
-                        _selectedShotGroup = SHOT_CARDS_OB.SHOT_CARD_GROUPS["L1"]![0]; //set default shot group when bowler is selected.
-                        //_setCurrentBowlerType(0, widget.teamID);
-                      }))),
-          Opacity(
-              opacity: !_isBowlerOverCompleted(scoreboard!.PBOvers) ? .4 : 1,
-              child: AbsorbPointer(
-                  absorbing: !_isBowlerOverCompleted(scoreboard!.PBOvers),
-                  child: InkWell(
-                      child: const Card(
-                          child: SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: Padding(padding: EdgeInsets.all(5), child: Align(alignment: Alignment.center, child: Text("PB"))))),
-                      onTap: () async {
-                        _selectedShotGroup = SHOT_CARDS_PB.SHOT_CARD_GROUPS["L1"]![0]; //set default shot group when bowler is selected.
-                        //_setCurrentBowlerType(1, widget.teamID);
-                      }))),
-        ]));
   }
 
   bool _isBowlerOverCompleted(int overs) {

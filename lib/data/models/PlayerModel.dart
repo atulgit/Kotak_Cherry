@@ -46,5 +46,5 @@ class PlayerModel extends HiveObject {
   @HiveField(13)
   int bowlerPlayingStatus = -1; //0 -> Not Bowling, 1 -> Bowling, 2 -> Bowling completed
 
-  PlayerModel(this.playerType, this.playerName, this.playerId, this.teamId);
+  PlayerModel(this.playerType, this.playerName, this.playerId, this.teamId, this.batsmanLevel, this.bowlerLevel);
 }

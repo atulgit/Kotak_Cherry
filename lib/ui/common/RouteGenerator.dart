@@ -32,7 +32,7 @@ mixin RouteGenerator {
 
       case '/scoreboard':
         return MaterialPageRoute<PlayerModel>(
-            builder: (_) => ScoreboardScreen(getArgumentValue('teamId', settings), int.parse(getArgumentValue('type', settings))));
+            builder: (_) => ScoreboardScreen(getArgumentValue('teamId', settings), int.parse(getArgumentValue('selectionMode', settings))));
 
         return MaterialPageRoute<TaskListScreen>(
             settings: RouteSettings(name: "/tasklist?refresh=${getArgumentValue('refresh', settings)}"),

@@ -21,13 +21,13 @@ class PlayerModelAdapter extends TypeAdapter<PlayerModel> {
       fields[1] as String,
       fields[0] as int,
       fields[10] as String,
+      fields[7] as String,
+      fields[6] as String,
     )
       ..totalScore = fields[2] as int
       ..totalDRS = fields[3] as int
       ..batsmanPlayingStatus = fields[4] as int
       ..totalWicketsTaken = fields[5] as int
-      ..bowlerLevel = fields[6] as String
-      ..batsmanLevel = fields[7] as String
       ..overPlayed = fields[8] as int
       ..ballsPlayed = fields[9] as int
       ..points = fields[11] as int
