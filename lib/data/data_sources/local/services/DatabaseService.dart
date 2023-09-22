@@ -415,13 +415,31 @@ class DatabaseService {
   //Also do this after checking if the current over ball is already set to zero.
   Future<ScoreboardModel?> initOver(int bowlerType, int bowlerId, String teamId) async {
     try {
+
+      String teamIdForScorecard = (teamId == "teamA") ? "teamB" : "teamA";
+
       final database = await _database_tasks;
-      ScoreboardModel scoreboardModel = database.get(teamId)!;
+      ScoreboardModel scoreboardModel = database.get(teamIdForScorecard)!;
 
       if (scoreboardModel.currentOverBall == 0) {
         scoreboardModel.currentBowlerType = bowlerType;
         scoreboardModel.currentBowlerId = bowlerId;
         scoreboardModel.currentOverString = "";
+      }
+
+      PlayerModel playerModel;
+      if (teamId == "teamA") {
+        //Create player inning for TeamA
+        final database = await _database_bowler_Team_A;
+        playerModel = database.get(bowlerId)!;
+        playerModel.bowlerPlayingStatus = 1; //Playing
+        database.put(bowlerId, playerModel);
+      } else if (teamId == "teamB") {
+        //Create player inning for TeamB
+        final database = await _database_bowler_Team_B;
+        playerModel = database.get(bowlerId)!;
+        playerModel.bowlerPlayingStatus = 1; //Playing
+        database.put(bowlerId, playerModel);
       }
 
       await scoreboardModel.save();
@@ -621,6 +639,7 @@ class DatabaseService {
           }
 
           scoreboardModel.currentBowlerType = -1; //Reset current bowler type, when over is completed.
+          scoreboardModel.currentBowlerId = -1;
         }
 
         //match completed, overs completed or wickets completed.

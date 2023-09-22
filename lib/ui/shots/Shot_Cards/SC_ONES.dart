@@ -21,7 +21,7 @@ mixin SC_ONES {
       [
         HashMap.of({"SHOT": Shot.withCount("1", 110, SHOT_TYPE.singles)}), //Shot Group
         HashMap.of({"SHOT": Shot.withCount("1", 20, SHOT_TYPE.nb)}),
-        HashMap.of({"SHOT": Shot.withCount("O", 50, SHOT_TYPE.wicket)})
+        HashMap.of({"SHOT": Shot.withCount("O", 50, SHOT_TYPE.wicket, subShot: Shot.withCount("O", 10, SHOT_TYPE.tuWicket))})
       ],
       cardType: 1,
       primaryShotType: SHOT_TYPE.singles);
@@ -43,7 +43,7 @@ mixin SC_ONES {
       [
         HashMap.of({"SHOT": Shot.withCount("1", 110, SHOT_TYPE.singles)}), //Shot Group
         HashMap.of({"SHOT": Shot.withCount("1", 30, SHOT_TYPE.nb)}),
-        HashMap.of({"SHOT": Shot.withCount("O", 40, SHOT_TYPE.wicket)})
+        HashMap.of({"SHOT": Shot.withCount("O", 40, SHOT_TYPE.wicket, subShot: Shot.withCount("O", 10, SHOT_TYPE.tuWicket))})
       ],
       cardType: 1,
       primaryShotType: SHOT_TYPE.singles);
@@ -75,7 +75,7 @@ mixin SC_ONES {
       [
         HashMap.of({"SHOT": Shot.withCount("1", 110, SHOT_TYPE.singles)}), //Shot Group
         HashMap.of({"SHOT": Shot.withCount("1", 40, SHOT_TYPE.nb)}),
-        HashMap.of({"SHOT": Shot.withCount("O", 30, SHOT_TYPE.wicket)})
+        HashMap.of({"SHOT": Shot.withCount("O", 30, SHOT_TYPE.wicket, subShot: Shot.withCount("O", 10, SHOT_TYPE.tuWicket))})
       ],
       cardType: 1,
       primaryShotType: SHOT_TYPE.singles);
@@ -97,7 +97,7 @@ mixin SC_ONES {
       [
         HashMap.of({"SHOT": Shot.withCount("1", 110, SHOT_TYPE.singles)}), //Shot Group
         HashMap.of({"SHOT": Shot.withCount("1", 50, SHOT_TYPE.nb)}),
-        HashMap.of({"SHOT": Shot.withCount("O", 20, SHOT_TYPE.wicket)})
+        HashMap.of({"SHOT": Shot.withCount("O", 20, SHOT_TYPE.wicket, subShot: Shot.withCount("O", 10, SHOT_TYPE.tuWicket))})
       ],
       cardType: 1,
       primaryShotType: SHOT_TYPE.singles);

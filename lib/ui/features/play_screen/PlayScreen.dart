@@ -47,7 +47,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
   PlayerModel? _currentBatsman;
   PlayerModel? _currentBowler;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  GroupShots? _selectedShotGroup = null;
+  GroupShots? _selectedShotGroup;
 
   bool _startInningEnabled = false;
 
@@ -74,8 +74,12 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
   void init() async {
     var teamScoreboard = await DatabaseService.databaseService.getScorecard(widget.teamID);
+    await _initCurrentBowlerAndBatsman(teamScoreboard!);
+    _setShotGroup();
+    var currentView = await _getCurrentView();
     setState(() {
       scoreboard = teamScoreboard;
+      _currentView = currentView;
     });
   }
 
@@ -112,6 +116,18 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
       title = "SELECT BOWLER";
     }
 
+    String teamId = "";
+    if (type == 0) {
+      teamId = widget.teamID;
+    } else if (type == 1) {
+      teamId = _getBowlingTeamId();
+      // if (widget.teamID == "teamA") {
+      //   teamId = "teamB";
+      // } else if (widget.teamID == "teamB") {
+      //   teamId = "teamA";
+      // }
+    }
+
     return Padding(
         padding: const EdgeInsets.all(10),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -122,11 +138,17 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                       height: 100,
                       child: Padding(padding: const EdgeInsets.all(5), child: Align(alignment: Alignment.center, child: Text(title))))),
               onTap: () async {
-                Navigator.pushNamed(context, "/scoreboard?teamId=${scoreboard!.teamID}&selectionMode=1").then((value) async {
+                Navigator.pushNamed(context, "/scoreboard?teamId=$teamId&selectionMode=$type").then((value) async {
                   //BATSMAN SELECTED By player. Set current batsman
                   if (type == 0) {
                     setState(() {
-                      _currentView = "bs";
+                      if (scoreboard!.currentBowlerType == -1) {
+                        _setCurrentView("bs");
+                        //_currentView = "bs";
+                      } else {
+                        _setCurrentView("ds");
+                        // _currentView = "ds";
+                      }
                       _currentBatsman = value as PlayerModel;
                     });
                   } else if (type == 1) {
@@ -136,11 +158,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
                     //Get shot groups based on selected batsman level(L1,L2,L3) and selected bowler(OB,PB).
                     //set Default shot group when bowler is selected.
-                    if (_currentBowler!.bowlerLevel == "OB") {
-                      _selectedShotGroup = SHOT_CARDS_OB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]![0];
-                    } else if (_currentBowler!.bowlerLevel == "PB") {
-                      _selectedShotGroup = SHOT_CARDS_PB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]![0];
-                    }
+                    _setShotGroup();
 
                     //After selecting the bowler, initialize over in match scorecard, and change view to delivery selection.
                     if (_currentBowler!.bowlerLevel == "OB") {
@@ -152,6 +170,26 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                 });
               })
         ]));
+  }
+
+  void _setShotGroup() {
+    if (_currentBatsman != null && _currentBowler != null) {
+      if (_currentBowler!.bowlerLevel == "OB") {
+        _selectedShotGroup = SHOT_CARDS_OB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]![0];
+      } else if (_currentBowler!.bowlerLevel == "PB") {
+        _selectedShotGroup = SHOT_CARDS_PB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]![0];
+      }
+    }
+  }
+
+  Future<void> _initCurrentBowlerAndBatsman(ScoreboardModel scoreboardModel) async {
+    if (scoreboardModel!.currentBowlerId != -1) {
+      _currentBowler = await DatabaseService.databaseService.getBowler(widget.teamID, scoreboardModel!.currentBowlerId);
+    }
+
+    if (scoreboardModel!.currentBatsmanId != -1) {
+      _currentBatsman = await DatabaseService.databaseService.getBatsman(widget.teamID, scoreboardModel!.currentBatsmanId);
+    }
   }
 
   //Check which team is batting, return the bowling teamId.
@@ -176,16 +214,36 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                       child: Padding(padding: EdgeInsets.all(5), child: Align(alignment: Alignment.center, child: Text("START INNING"))))),
               onTap: () async {
                 var teamScorecard = await DatabaseService.databaseService.startInning(widget.teamID);
-                final SharedPreferences prefs = await _prefs;
-                await prefs.setString("inn", widget.teamID);
+                // final SharedPreferences prefs = await _prefs;
+                // await prefs.setString("inn", widget.teamID);
 
                 setState(() {
-                  _currentView = "bts"; //Shot batsman selection option, once the inning is started.
+                  _setCurrentView("bts");
+                  // _currentView = "bts"; //Shot batsman selection option, once the inning is started.
                   KCConstants.currentInn = widget.teamID; //Set current playing team Id.
                   scoreboard = teamScorecard; //Update match scorecard after the inning is started.
                 });
               })
         ]));
+  }
+
+  void _setCurrentView(String view) async {
+    _currentView = view;
+
+    if (view != "ss") {
+      final SharedPreferences prefs = await _prefs;
+      await prefs.setString("view", view);
+    }
+  }
+
+  Future<String> _getCurrentView() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.getString("view");
+    if (prefs.containsKey("view")) {
+      return prefs.getString("view")!;
+    }
+
+    return "";
   }
 
   void setStateTemp() async {
@@ -339,14 +397,6 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
     List<Map<String, Shot>> SHOT_CARD_STRENGTH = strengthBuilder.buildStrength(shotCardObj, _currentBatsman!.points, _currentBowler!.points);
 
-    // if (scoreboard!.currentBowlerType == 0) {
-    //   //for OB Bowler
-    //   shotCardObj = _selectedShotGroup!.shotGroup[number - 1];
-    // } else {
-    //   //For PB Bowler
-    //   shotCardObj = PBShotCards.SHOT_CARDS[number - 1];
-    // }
-
     var shotNumber = random(1, 180); //Generate probability number.
 
     int shotCount = 0; //Probability count for all shots
@@ -356,8 +406,32 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
       Map<String, Shot> shotMap = shotCardObj.SHOT_CARD[i];
       //Get Shot card.
       Shot shotObj = shotMap["SHOT"]!;
-      //Get count for this shot and add
-      shotCount += shotObj.count;
+      // //Get count for this shot and add
+      // shotCount += shotObj.count;
+
+      //Check if third umpire subshot exists.
+      if (shotObj.shot_type == SHOT_TYPE.wicket && shotObj.subShot != null) {
+        //if Third Umpire exists as Subshot.
+        int tuWicketCount = shotObj.subShot!.count; //Third umpire wicket probability count.
+        int wicketCount = shotObj.count - tuWicketCount; //Wicket probability count.
+
+        shotCount += tuWicketCount;
+        if (shotCount <= shotNumber) {
+          return Shot.withCount(shotObj.subShot!.value, shotObj.subShot!.count, SHOT_TYPE.tuWicket);
+        } else {
+          return shotObj;
+        }
+      } else {
+        //If subshot as tuwicket does not exist.
+        //Get count for this shot and add
+        shotCount += shotObj.count;
+
+        //Check if probability addition is greater than or equal to random probability no.
+        //Select the shot object if probable shot is found.
+        if (shotCount >= shotNumber) {
+          return shotObj;
+        }
+      }
 
       //Check if probability addition is greater than or equal to random probability no.
       //Select the shot object if probable shot is found.
@@ -457,10 +531,12 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
       // If this shot is Third-Umpire shot, then show DRS options (YES/NO).
       if (shotObj.shot_type == SHOT_TYPE.tuWicket) {
-        _currentView = "drs";
+        _setCurrentView("drs");
+        // _currentView = "drs";
       } else {
         //Otherwise show scorecard with play button.
-        _currentView = "sc";
+        _setCurrentView("sc");
+        // _currentView = "sc";
         _playBoundarySound(scoreboardModel!);
       }
 
@@ -656,7 +732,8 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
             child: InkWell(
                 onTap: () {
                   setState(() {
-                    _currentView = "ss";
+                    // _currentView = "ss";
+                    _setCurrentView("ss");
                   });
                 },
                 child: const Card(
@@ -694,10 +771,12 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
   }
 
   List<GroupShots> _getShotGroups() {
-    if (_currentBowler!.bowlerLevel == "OB") {
-      return SHOT_CARDS_OB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]!;
-    } else if (_currentBowler!.bowlerLevel == "PB") {
-      return SHOT_CARDS_PB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]!;
+    if (_currentBowler != null && _currentBatsman != null) {
+      if (_currentBowler!.bowlerLevel == "OB") {
+        return SHOT_CARDS_OB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]!;
+      } else if (_currentBowler!.bowlerLevel == "PB") {
+        return SHOT_CARDS_PB.SHOT_CARD_GROUPS[_currentBatsman!.batsmanLevel]!;
+      }
     }
 
     return [];
@@ -863,7 +942,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
                       type = 0;
                     else
                       type = 1;
-                    Navigator.pushNamed(context, "/scoreboard?teamId=${scoreboard!.teamID}&selectionMode=0");
+                    Navigator.pushNamed(context, "/scoreboard?teamId=${scoreboard!.teamID}&selectionMode=-1");
                   },
                   icon: const Icon(Icons.settings, size: 30))
             ])));
@@ -963,19 +1042,26 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
         ElevatedButton(
             onPressed: () async {
               setState(() {
+                // if(scoreboard!.currentBallShotType)
+
                 //If bowler is not selected, show bowler selection view.
                 if (scoreboard!.currentBowlerType == -1) {
-                  _currentView = "bs";
+                  _setCurrentView("bs");
+                  // _currentView = "bs";
                 } else {
                   //if bowler is selected, show delivery selection view.
-                  _currentView = "ds";
+                  //_currentView = "ds";
 
-                  // //if bowler is selected, check if this was the third umpire delivery. but user selected to play
-                  // if (scoreboard!.currentBallShotType == SHOT_TYPE.tuWicket.value) {
-                  // } else {
-                  //   //if bowler is selected, show short selection view.
-                  //   _currentView = "ss";
-                  // }
+                  //if bowler is selected, check if this was the third umpire delivery. but user selected to play
+                  if (scoreboard!.currentBallShotType == SHOT_TYPE.tuWicket.value) {
+                  } else if (scoreboard!.currentBallShotType == SHOT_TYPE.wicket.value) {
+                    // _currentView = "bts";
+                    _setCurrentView("bts");
+                  } else {
+                    //if bowler is selected, show short selection view.
+                    // _currentView = "ds";
+                    _setCurrentView("ds");
+                  }
                 }
               });
             },
@@ -1029,9 +1115,10 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
 
   //Set current bowler to Match Scorecard
   Future<void> _setCurrentBowler(int bowlerType, int bowlerId, String teamId) async {
-    var scorecard = await DatabaseService.databaseService.initOver(bowlerType, bowlerId, teamId); //Current bowler for TeamA
+    var scorecard = await DatabaseService.databaseService.getScorecard(teamId);
     setState(() {
-      _currentView = "ds"; //After showing bowler selection, show delivery selection.
+      _setCurrentView("ds");
+      // _currentView = "ds"; //After showing bowler selection, show delivery selection.
       scoreboard = scorecard; //Current bowler for TeamA
     });
   }

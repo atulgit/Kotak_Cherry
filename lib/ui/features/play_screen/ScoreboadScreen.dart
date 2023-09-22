@@ -7,7 +7,9 @@ import '../../../data/models/PlayerModel.dart';
 
 class ScoreboardScreen extends StatefulWidget {
   String teamId = "";
-  int selectionMode = 0;
+  int selectionMode = -1;
+
+  // int selectionType = -1; //0 -> Bating, 1 -> Bowling
 
   // int scorecardType = -1; //Batting/Bowling
 
@@ -25,7 +27,8 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
   List<PlayerModel>? _battingScorecard;
   List<PlayerModel>? _bowlingScorecard;
 
-  ScoreboardModel? _scoreboardModel;
+  ScoreboardModel? _battingInning;
+  ScoreboardModel? _bowlingInning;
 
   final TextStyle _textStyle = const TextStyle(fontWeight: FontWeight.bold);
 
@@ -33,6 +36,7 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.index = widget.selectionMode == -1 ? 0 : widget.selectionMode; //set Batting/Bowling tab as per selection.
     _init();
   }
 
@@ -40,13 +44,25 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
     List<PlayerModel>? battingScorecard = await DatabaseService.databaseService.getBattingScoreboard(widget.teamId);
     List<PlayerModel>? bowlingScorecard = await DatabaseService.databaseService.getBowlingScoreboard(widget.teamId);
 
-    var scoreboard = await DatabaseService.databaseService.getScorecard(widget.teamId);
+    ScoreboardModel? battingInning;
+    ScoreboardModel? bowlingInning;
+
+    if (widget.teamId == "teamA") {
+      //If TeamA, get batting scorecard from TeamA and bowling scorecard from TeamB.
+      battingInning = await DatabaseService.databaseService.getScorecard(widget.teamId);
+      bowlingInning = await DatabaseService.databaseService.getScorecard("teamB");
+    } else if (widget.teamId == "teamB") {
+      //If TeamB, get batting scorecard from TeamB and bowling scorecard from TeamA.
+      battingInning = await DatabaseService.databaseService.getScorecard(widget.teamId);
+      bowlingInning = await DatabaseService.databaseService.getScorecard("teamA");
+    }
 
     setState(() {
       _battingScorecard = battingScorecard;
       _bowlingScorecard = bowlingScorecard;
 
-      _scoreboardModel = scoreboard;
+      _battingInning = battingInning;
+      _bowlingInning = bowlingInning;
     });
   }
 
@@ -56,7 +72,7 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
   }
 
   Widget _getBody() {
-    if (_scoreboardModel == null || _battingScorecard == null || _bowlingScorecard == null) {
+    if (_battingInning == null || _bowlingInning == null || _battingScorecard == null || _bowlingScorecard == null) {
       return Container();
     }
 
@@ -66,11 +82,11 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
         tabs: [
           Tab(
             icon: const Icon(Icons.sports_cricket, color: Colors.blueGrey),
-            child: Text("${_scoreboardModel!.teamName} BATTING", style: const TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+            child: Text("${_battingInning!.teamName} BATTING", style: const TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold)),
           ),
           Tab(
             icon: const Icon(Icons.sports_cricket_outlined, color: Colors.blueGrey),
-            child: Text("${_scoreboardModel!.teamName} BOWLING", style: const TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+            child: Text("${_battingInning!.teamName} BOWLING", style: const TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -103,59 +119,97 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
                     DataColumn(label: Text("Level")),
                     DataColumn(label: Text("Overs"))
                   ], rows: [
-                    for (var player in scorecard!)
-                      DataRow(cells: [
-                        DataCell(AbsorbPointer(
-                            absorbing: scoreboardType == 0 ? !_isBatsmanSelectionEnabled() : !_isBowlerSelectionEnabled(player),
-                            child: InkWell(
-                                onTap: () async {
-                                  if (scoreboardType == 0) {
-                                    //Batsman Selected
-                                    await DatabaseService.databaseService.startBatsmanInning(widget.teamId, player.playerId);
-                                  } else if (scoreboardType == 1) {
-                                    //Bowler Selected
-                                    await DatabaseService.databaseService.startBatsmanInning(widget.teamId, player.playerId);
-                                  }
-                                  Navigator.pop(context, player);
-                                },
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [Text(player.playerName), const SizedBox(height: 5), _getPlayerStrength(player)])))),
-                        DataCell(Text(player.totalScore.toString())),
-                        DataCell(Text(_getPlayerStatus(player))),
-                        DataCell(Text(player.totalDRS.toString())),
-                        DataCell(Text(player.playerType == 0 ? player.batsmanLevel : player.bowlerLevel)),
-                        DataCell(Text("${player.overPlayed}.${player.ballsPlayed}"))
-                      ]),
-                    DataRow(cells: [
-                      DataCell(Text("Total", style: _textStyle)),
-                      DataCell(Text(_scoreboardModel!.totalScore.toString(), style: _textStyle)),
-                      DataCell(Text("", style: _textStyle)),
-                      DataCell(Text(_scoreboardModel!.BATDRSTaken.toString(), style: _textStyle)),
-                      const DataCell(Text("")),
-                      DataCell(Text("${_scoreboardModel!.currentOver}.${_scoreboardModel!.currentOverBall}/${_scoreboardModel!.totalOvers}",
-                          style: _textStyle))
-                    ])
+                    for (var player in scorecard!) _getRow(scoreboardType, player),
+                    _getBottomRow(scoreboardType)
                   ]))))
         ]));
   }
 
+  DataRow _getRow(int scoreboardType, PlayerModel player) {
+    return DataRow(
+        color: MaterialStateColor.resolveWith((states) {
+          return _getPlayerColor(player); //make tha magic!
+        }),
+        cells: [
+          DataCell(AbsorbPointer(
+              absorbing:
+                  scoreboardType == 0 ? !_isBatsmanSelectionEnabled(scoreboardType, player) : !_isBowlerSelectionEnabled(scoreboardType, player),
+              child: InkWell(
+                  onTap: () async {
+                    if (scoreboardType == 0) {
+                      //Batsman Selected
+                      await DatabaseService.databaseService.startBatsmanInning(widget.teamId, player.playerId);
+                    } else if (scoreboardType == 1) {
+                      //Bowler Selected
+                      await DatabaseService.databaseService.initOver(player.bowlerLevel == "OB" ? 0 : 1, player.playerId, widget.teamId);
+                    }
+                    Navigator.pop(context, player);
+                  },
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
+                    _getText(player, player.playerName),
+                    const SizedBox(height: 5),
+                    Opacity(opacity: _getTextOpacity(player), child: _getPlayerStrength(player))
+                  ])))),
+          DataCell(_getText(player, player.totalScore.toString())), //Total runs scored for batsman, total runs given by bowler.
+          DataCell(_getText(player, _getPlayerStatus(player))), //Batsman status (Playing/Out), Bowler Status (Playing/Overs Completed)
+          DataCell(_getText(player, player.totalDRS.toString())), //Total DRS taken by batsman or bowler.
+          DataCell(_getText(player, player.playerType == 0 ? player.batsmanLevel : player.bowlerLevel)), //Batsman or Bowler Type(Level)
+          DataCell(_getText(player, "${player.overPlayed}.${player.ballsPlayed}")) //Batsman or Bowler total overs played.
+        ]);
+  }
+
+  Widget _getText(PlayerModel player, String text) {
+    return Opacity(opacity: _getTextOpacity(player), child: Text(text));
+  }
+
+  DataRow _getBottomRow(int scoreboardType) {
+    return DataRow(cells: [
+      DataCell(Text("Total", style: _textStyle)), //Total Label
+      DataCell(Text(_getScores(scoreboardType).toString(), style: _textStyle)), //Total runs scored by team.
+      DataCell(Text("", style: _textStyle)),
+      DataCell(Text(scoreboardType == 0 ? _battingInning!.BATDRSTaken.toString() : _bowlingInning!.BOWLDRSTaken.toString(), style: _textStyle)),
+      const DataCell(Text("")),
+      DataCell(Text(_getOvers(scoreboardType), style: _textStyle))
+    ]);
+  }
+
+  int _getScores(int scoreboardType) {
+    if (scoreboardType == 0) {
+      return _battingInning!.totalScore;
+    } else if (scoreboardType == 1) {
+      return _bowlingInning!.totalScore;
+    }
+
+    return 0;
+  }
+
+  String _getOvers(int scoreboardType) {
+    if (scoreboardType == 0) {
+      return "${_battingInning!.currentOver}.${_battingInning!.currentOverBall}/${_battingInning!.totalOvers}";
+    } else if (scoreboardType == 1) {
+      return "${_bowlingInning!.currentOver}.${_bowlingInning!.currentOverBall}/${_bowlingInning!.totalOvers}";
+    }
+
+    return "";
+  }
+
   //Check if any batsman Id is playing currently, in ScorboardModel.
   //This method assumes to be called only in case of batting team.
-  bool _isBatsmanSelectionEnabled(PlayerModel playerModel) {
-    if (widget.selectionMode == 1 && _scoreboardModel!.currentBatsmanId == -1 && playerModel.batsmanPlayingStatus == 0) return true;
+  bool _isBatsmanSelectionEnabled(int type, PlayerModel playerModel) {
+    if (widget.selectionMode == 0 && _battingInning!.currentBatsmanId == -1 && playerModel.batsmanPlayingStatus == 0) return true;
 
     return false;
   }
 
-  //Check if any bowler Id is playing currently, in ScorboardModel.
+  //Check if any bowler Id is playing currently, in ScoreboardModel.
   //This method assumes to be called only in case of bowling team.
-  bool _isBowlerSelectionEnabled(PlayerModel playerModel) {
-    if (widget.selectionMode == 1 &&
-        _scoreboardModel!.currentBowlerId == -1 &&
+  bool _isBowlerSelectionEnabled(int type, PlayerModel playerModel) {
+    if (widget.selectionMode == 1 && //Bowler selection mode for TeamB will come always from TeamA and wise-versa.
+        _bowlingInning!.currentBowlerId == -1 && //In batting inning, there is bowling inning for other team.
         playerModel.bowlerLevel != "NA" &&
-        !_bowlerOversCompleted(playerModel)) return true;
+        !_bowlerOversCompleted(playerModel)) {
+      return true;
+    }
 
     return false;
   }
@@ -163,7 +217,7 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
   //Check if bowler has played all overs. One bowler can play maximum of totalovers/5.
   //Return true if all overs player, return false if overs left to be played.
   bool _bowlerOversCompleted(PlayerModel playerModel) {
-    int bowlerTotalOvers = _scoreboardModel!.totalOvers ~/ 5;
+    int bowlerTotalOvers = _bowlingInning!.totalOvers ~/ 5;
     if (playerModel.overPlayed >= bowlerTotalOvers) return true;
 
     return false;
@@ -199,17 +253,86 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
     );
   }
 
+  //Here 2 points are equal to 1 strength.
   double _pointsToStrength(int points) {
     return points / 2;
   }
 
   String _getPlayerStatus(PlayerModel playerModel) {
-    if (playerModel.batsmanPlayingStatus == 1) {
-      return "playing";
-    } else if (playerModel.batsmanPlayingStatus == 2) {
-      return "out";
-    } else {
-      return "";
+    if (playerModel.playerType == 0) {
+      if (playerModel.batsmanPlayingStatus == 1) {
+        return "Playing";
+      } else if (playerModel.batsmanPlayingStatus == 2) {
+        return "Out";
+      } else {
+        return "";
+      }
+    } else if (playerModel.playerType == 1) {
+      if (playerModel.bowlerPlayingStatus == 1) {
+        return "Playing";
+      } else if (playerModel.bowlerPlayingStatus == 2) {
+        return "Out";
+      } else {
+        return "";
+      }
     }
+
+    return "";
+  }
+
+  double _getTextOpacity(PlayerModel playerModel) {
+    if (playerModel.playerType == 0) {
+      //If batsman
+      if (playerModel.batsmanPlayingStatus == 1) {
+        //Batsman is playing.
+        return 1;
+      } else if (playerModel.batsmanPlayingStatus == 2) {
+        //If batsman is out.
+        return 1;
+      } else {
+        return 1;
+      }
+    } else if (playerModel.playerType == 1) {
+      //if bowler
+      if (playerModel.bowlerPlayingStatus == 1) {
+        //if bowler is playing the over.
+        return 1;
+      } else if (playerModel.bowlerPlayingStatus == 2) {
+        //if bowler has completed its over.
+        return 1;
+      } else {
+        return 1;
+      }
+    }
+
+    return 1;
+  }
+
+  Color _getPlayerColor(PlayerModel playerModel) {
+    if (playerModel.playerType == 0) {
+      //If batsman
+      if (playerModel.batsmanPlayingStatus == 1) {
+        //Batsman is playing.
+        return Colors.blueGrey.withOpacity(.1);
+      } else if (playerModel.batsmanPlayingStatus == 2) {
+        //If batsman is out.
+        return Colors.redAccent.withOpacity(.9);
+      } else {
+        return Colors.white;
+      }
+    } else if (playerModel.playerType == 1) {
+      //if bowler
+      if (playerModel.bowlerPlayingStatus == 1) {
+        //if bowler is playing the over.
+        return Colors.blueGrey.withOpacity(.1);
+      } else if (playerModel.bowlerPlayingStatus == 2) {
+        //if bowler has completed its over.
+        return Colors.grey.withOpacity(.009);
+      } else {
+        return Colors.white;
+      }
+    }
+
+    return Colors.white;
   }
 }

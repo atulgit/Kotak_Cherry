@@ -25,9 +25,11 @@ class Shot {
   String value = "";
   SHOT_TYPE shot_type = SHOT_TYPE.none;
 
-  Shot(this.value, this.shot_type);
+  Shot? subShot;
 
-  Shot.withCount(this.value, this.count, this.shot_type);
+  Shot(this.value, this.shot_type, {this.subShot});
+
+  Shot.withCount(this.value, this.count, this.shot_type, {this.subShot});
 }
 
 enum SHOT_TYPE {
