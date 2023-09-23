@@ -93,14 +93,14 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
       Expanded(
           child: TabBarView(
         controller: _tabController,
-        children: [_getTeamScorecard(0, _battingScorecard), _getTeamScorecard(1, _bowlingScorecard)],
+        children: [_getTeamScorecard(0, _battingScorecard), _getTeamScorecard(1, _bowlingScorecard!.reversed.toList())],
       ))
     ]);
   }
 
   Widget _getTeamScorecard(int scoreboardType, List<PlayerModel>? scorecard) {
     return Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(5),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // Text(_scoreboardModel!.teamName, textAlign: TextAlign.start, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
           // const SizedBox(height: 10),
@@ -111,11 +111,12 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
                   scrollDirection: Axis.vertical,
                   physics: const ScrollPhysics(),
                   child: Expanded(
-                      child: DataTable(columns: const [
+                      child: DataTable(columnSpacing: 40, columns: const [
                     DataColumn(label: Text("Player Name")),
                     DataColumn(label: Text("Runs")),
                     DataColumn(label: Text("Status")),
                     DataColumn(label: Text("DRS")),
+                    DataColumn(label: Text("Run Rate")),
                     DataColumn(label: Text("Level")),
                     DataColumn(label: Text("Overs"))
                   ], rows: [
@@ -153,13 +154,14 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
           DataCell(_getText(player, player.totalScore.toString())), //Total runs scored for batsman, total runs given by bowler.
           DataCell(_getText(player, _getPlayerStatus(player))), //Batsman status (Playing/Out), Bowler Status (Playing/Overs Completed)
           DataCell(_getText(player, player.totalDRS.toString())), //Total DRS taken by batsman or bowler.
-          DataCell(_getText(player, player.playerType == 0 ? player.batsmanLevel : player.bowlerLevel)), //Batsman or Bowler Type(Level)
+          DataCell(_getText(player, _getRunRate(player).toString())), //Run rate for bowler and batsman.
+          DataCell(_getText(player, player.playerType == 0 ? player.batsmanLevel : player.bowlerLevel, isBold: true)), //Batsman or Bowler Type(Level)
           DataCell(_getText(player, "${player.overPlayed}.${player.ballsPlayed}")) //Batsman or Bowler total overs played.
         ]);
   }
 
-  Widget _getText(PlayerModel player, String text) {
-    return Opacity(opacity: _getTextOpacity(player), child: Text(text));
+  Widget _getText(PlayerModel player, String text, {bool isBold = false}) {
+    return Opacity(opacity: _getTextOpacity(player), child: Text(text, style: TextStyle(fontWeight: isBold ? FontWeight.bold : FontWeight.normal)));
   }
 
   DataRow _getBottomRow(int scoreboardType) {
@@ -169,8 +171,18 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
       DataCell(Text("", style: _textStyle)),
       DataCell(Text(scoreboardType == 0 ? _battingInning!.BATDRSTaken.toString() : _bowlingInning!.BOWLDRSTaken.toString(), style: _textStyle)),
       const DataCell(Text("")),
+      const DataCell(Text("")),
       DataCell(Text(_getOvers(scoreboardType), style: _textStyle))
     ]);
+  }
+
+  double _getRunRate(PlayerModel playerModel) {
+    double runRate = 0.0;
+    int totalBalls = (playerModel.overPlayed * 6) + playerModel.ballsPlayed; //Total balls played so far.
+    double runRatePerBall = (playerModel.totalScore / totalBalls); //Per ball run rate.
+    runRate = (runRatePerBall * 6).roundToDouble(); //Run rate for one over.
+
+    return runRate;
   }
 
   int _getScores(int scoreboardType) {
@@ -207,6 +219,7 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
     if (widget.selectionMode == 1 && //Bowler selection mode for TeamB will come always from TeamA and wise-versa.
         _bowlingInning!.currentBowlerId == -1 && //In batting inning, there is bowling inning for other team.
         playerModel.bowlerLevel != "NA" &&
+        _bowlingInning!.lastBowlerId != playerModel.playerId &&
         !_bowlerOversCompleted(playerModel)) {
       return true;
     }
@@ -255,7 +268,7 @@ class ScoreboardState extends State<ScoreboardScreen> with TickerProviderStateMi
 
   //Here 2 points are equal to 1 strength.
   double _pointsToStrength(int points) {
-    return points / 2;
+    return points.toDouble(); //points / 2;
   }
 
   String _getPlayerStatus(PlayerModel playerModel) {

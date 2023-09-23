@@ -698,7 +698,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
     return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [for (int i = 0; i < shotGrp["SHOT"]!.count; i++) _getShotItem(shotGrp["SHOT"]!, i)]);
+        children: [for (int i = 0; i < shotGrp["L1"]!.count; i++) _getShotItem(shotGrp["L1"]!, i)]);
   }
 
   Widget _getShotCardItems(Map<String, Shot> shotGrp) {
@@ -933,6 +933,7 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               _getTeamScore(),
               _getTeamOvers(),
+              _getRunRate(),
               _getOverBalls(),
               _getBowlers(),
               IconButton(
@@ -958,6 +959,16 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
     return Padding(
         padding: const EdgeInsets.only(left: 30),
         child: Text("Overs: ${scoreboard!.currentOver}.${scoreboard!.currentOverBall}", style: const TextStyle(fontSize: 16)));
+  }
+
+  //Run rate display.
+  Widget _getRunRate() {
+    double runRate = 0.0;
+    int totalBalls = (scoreboard!.currentOver * 6) + scoreboard!.currentOverBall; //Total balls played so far.
+    double runRatePerBall = (scoreboard!.totalScore / totalBalls); //Per ball run rate.
+    runRate = (runRatePerBall * 6).roundToDouble(); //Run rate for one over.
+
+    return Padding(padding: const EdgeInsets.only(left: 30), child: Text("Run Rate: $runRate", style: const TextStyle(fontSize: 16)));
   }
 
 //Get current over string for all shots.
@@ -1042,12 +1053,13 @@ class PlayState extends State<PlayScreen> with AutomaticKeepAliveClientMixin {
         ElevatedButton(
             onPressed: () async {
               setState(() {
-                // if(scoreboard!.currentBallShotType)
-
+                //If Batsman is not selected, select the bastsman first. Then check for bowler selection.
+                if (scoreboard!.currentBatsmanId == -1) {
+                  _setCurrentView("bts");
+                } else
                 //If bowler is not selected, show bowler selection view.
                 if (scoreboard!.currentBowlerType == -1) {
                   _setCurrentView("bs");
-                  // _currentView = "bs";
                 } else {
                   //if bowler is selected, show delivery selection view.
                   //_currentView = "ds";

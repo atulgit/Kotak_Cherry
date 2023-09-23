@@ -249,28 +249,33 @@ class DatabaseService {
           batsmanPoints += 4;
           bowlerPoints -= 4;
           batsmanModel!.totalScore += int.parse(shotObj.value);
+          bowlerModel!.totalScore += int.parse(shotObj.value);
           break;
 
         case SHOT_TYPE.six:
           batsmanPoints += 6;
           bowlerPoints -= 6;
           batsmanModel!.totalScore += int.parse(shotObj.value);
+          bowlerModel!.totalScore += int.parse(shotObj.value);
           break;
 
         case SHOT_TYPE.singles:
           batsmanPoints += int.parse(shotObj.value);
           bowlerPoints -= int.parse(shotObj.value);
           batsmanModel!.totalScore += int.parse(shotObj.value);
+          bowlerModel!.totalScore += int.parse(shotObj.value);
           break;
 
         case SHOT_TYPE.wb:
           bowlerPoints -= 1;
           batsmanModel!.totalScore += 1 + int.parse(shotObj.value);
+          bowlerModel!.totalScore += 1 + int.parse(shotObj.value);
           break;
 
         case SHOT_TYPE.nb:
           bowlerPoints -= 2;
           batsmanModel!.totalScore += 1 + int.parse(shotObj.value);
+          bowlerModel!.totalScore += 1 + int.parse(shotObj.value);
           break;
 
         case SHOT_TYPE.db:
@@ -328,12 +333,12 @@ class DatabaseService {
 
   Future<ScoreboardModel?> createScorecard(String teamID, String teamName, int overs) async {
     try {
-      int players = 0;
-      if (overs == 10) {
-        players = 5;
-      } else {
-        players = 10;
-      }
+      int players = TeamPlayers.TeamAPlayers.length;
+      // if (overs == 10) {
+      //   players = 5;
+      // } else {
+      //   players = 10;
+      // }
 
       ScoreboardModel scoreboardModelA = ScoreboardModel(overs, players, teamID, teamName);
       final database = await _database_tasks;
@@ -639,6 +644,7 @@ class DatabaseService {
           }
 
           scoreboardModel.currentBowlerType = -1; //Reset current bowler type, when over is completed.
+          scoreboardModel.lastBowlerId = scoreboardModel.currentBowlerId;
           scoreboardModel.currentBowlerId = -1;
         }
 

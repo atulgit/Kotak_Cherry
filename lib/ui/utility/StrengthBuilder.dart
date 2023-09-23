@@ -18,7 +18,7 @@ class StrengthBuilder {
     // double probabilityCount = shotObj.count.toDouble();
 
     int diff = (batsmanPoints - bowlerPoints);
-    double strength = diff / 3; //Convert difference points to strength boxes. 1 strength box consists of three points.
+    double strength = diff.toDouble(); //diff / 3; //Convert difference points to strength boxes. 1 strength box consists of three points.
 
     print("Strength: $strength");
     String strengthTeam = _checkIfBatsmanOrBowlerStrength(strength);

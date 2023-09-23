@@ -15,6 +15,7 @@ mixin SC_ONES {
       cardType: 0,
       primaryShotType: SHOT_TYPE.singles);
 
+
   static ShotCard SHOT_CARD_SC1_OUT = ShotCard(
       "SINGLES",
       "One's",
